@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String?
+  password          String
+  image             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  membership        Membership @default(FREE)
+  eventsJoined      Event[]   @relation("EventParticipants")
+  eventsBookmarked  Event[]   @relation("EventBookmarks")
+  waitlists         Waitlist[]
+  comments          Comment[]
+  reviews           Review[]
+  participatingEvents Participant[]
+  bio               String?
+  avatarUrl         String?
+  emailVerified     Boolean   @default(false)
+  isAdmin           Boolean   @default(false)
+  lastLogin         DateTime?
+  preferences       Json?
+  gender            Gender?   // Aggiunto per supportare la differenziazione per genere
+  dateOfBirth       DateTime? // Aggiunto per mostrare l'età
+  phoneNumber       String?   // Per comunicazioni importanti
+  isVerified        Boolean   @default(false) // Verifica dell'identità per eventi esclusivi
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum Membership {
+  FREE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum EventVisibility {
+  PUBLIC      // Visibile a tutti
+  MEMBERS     // Solo per membri (Silver+)
+  INVITATION  // Solo su invito
+  FOUNDER     // Solo per Platinum/Founder
+}
+
+enum RevealType {
+  IMMEDIATE    // Location mostrata subito
+  LAST_MINUTE  // Location rivelata all'ultimo
+  HOURS_24     // Location rivelata 24h prima
+}
+
+enum EntryPolicy {
+  STANDARD       // Ingresso standard uguale per tutti
+  WOMEN_FREE     // Ingresso gratuito per donne
+  MEN_FREE       // Ingresso gratuito per uomini
+  WOMEN_ONLY     // Solo donne ammesse
+  MEN_ONLY       // Solo uomini ammessi
+  RATIO_REQUIRED // Richiesto rapporto specifico uomini/donne
+  DIFFERENT_PRICES // Prezzi differenziati per genere
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String
+  description   String
+  icon          String
+  color         String
+  subcategories SubCategory[]
+  events        Event[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model SubCategory {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  events      Event[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Event {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  location        String?         // Può essere null per eventi "secret location"
+  locationDetails String?         // Dettagli aggiuntivi sulla location
+  date            DateTime
+  maxParticipants Int
+  price           Float           // Prezzo standard o prezzo per uomini
+  womenPrice      Float?          // Prezzo specifico per donne
+  image           String?
+  gallery         String[]        // Galleria di immagini della location
+  visibility      EventVisibility @default(INVITATION) // Default cambiato a INVITATION
+  revealType      RevealType      @default(LAST_MINUTE) // Default cambiato a LAST_MINUTE
+  tags            String[]        // Array di tag come "hidden_gem", "luxury_experience"
+  entryPolicy     EntryPolicy     @default(STANDARD)
+  entryRatio      Float?          // Rapporto numerico richiesto (es. 1.5 = 3 donne ogni 2 uomini)
+  minRequiredMen  Int?            // Numero minimo di uomini richiesto (se applicabile)
+  minRequiredWomen Int?           // Numero minimo di donne richiesto (se applicabile)
+  entryPolicyDetails String?      // Dettagli aggiuntivi sulla policy
+  category        Category        @relation(fields: [categoryId], references: [id])
+  categoryId      String
+  subcategory     SubCategory     @relation(fields: [subcategoryId], references: [id])
+  subcategoryId   String
+  participants    User[]          @relation("EventParticipants")
+  bookmarks       User[]          @relation("EventBookmarks")
+  waitlist        Waitlist[]
+  comments        Comment[]
+  reviews         Review[]
+  participantsList Participant[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  isPrivate       Boolean         @default(true) // Default cambiato a true
+  status          String          @default("upcoming")
+  luxuryLevel     Int             @default(3) // Livello di lusso da 1 a 5
+  amenities       String[]        // Servizi offerti (es. "open bar", "catering di lusso")
+  dress_code      String?         // Dress code richiesto
+  featured        Boolean         @default(false) // Eventi in evidenza
+  capacity        Int             // Capacità massima della location
+  minimumAge      Int             @default(18) // Età minima per partecipare
+}
+
+model Waitlist {
+  id        String   @id @default(cuid())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  position  Int      // Posizione nella waitlist
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, userId]) // Un utente può essere in lista d'attesa una sola volta per evento
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Participant {
+  userId   String
+  eventId  String
+  status   String   @default("registered")
+  joinedAt DateTime @default(now())
+  event    Event    @relation(fields: [eventId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  // Aggiunto per supportare la visualizzazione dei partecipanti
+  isVisible Boolean @default(true) // Se il partecipante è visibile agli altri
+
+  @@id([userId, eventId])
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  city        String
+  country     String
+  description String
+  images      String[] // Galleria di immagini
+  capacity    Int
+  amenities   String[] // Servizi offerti
+  type        String   // Villa, Appartamento, Yacht, etc.
+  isVerified  Boolean  @default(false) // Location verificata dal team
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  email     String
+  code      String   @unique
+  eventId   String?
+  status    String   @default("pending") // pending, accepted, declined
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

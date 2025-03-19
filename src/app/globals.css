@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Risolve il problema di sovrapposizione del testo */
+.text-center h1, .text-center h2, .text-center p {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Migliora la leggibilità del testo su sfondi scuri */
+.bg-black .text-white {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Nascondi eventuali elementi duplicati */
+.duplicate-text {
+  display: none;
+}
+
+/* Aumenta l'opacità dell'overlay per migliorare la leggibilità */
+.hero-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
