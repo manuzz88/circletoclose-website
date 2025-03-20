@@ -14,6 +14,28 @@ interface CloudinaryMapping {
   [key: string]: string;
 }
 
+// Interfaccia per la location con immagini
+interface LocationWithImages {
+  id: string;
+  name: string;
+  description: string;
+  city: string | null;
+  zone: string | null;
+  address: string | null;
+  capacity: number | null;
+  price: string | null;
+  features: string[];
+  imageUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  images: Array<{
+    id: string;
+    url: string;
+    localPath?: string;
+    cloudinaryUrl?: string | null;
+  }>;
+}
+
 // Handler per la richiesta GET
 export async function GET(
   request: Request,
@@ -28,7 +50,7 @@ export async function GET(
       include: {
         images: true,
       },
-    } as any);
+    }) as unknown as LocationWithImages;
 
     // Se la location non esiste, restituisci un errore 404
     if (!location) {
@@ -49,22 +71,32 @@ export async function GET(
     }
 
     // Trasforma i dati nel formato atteso dal frontend
-    const imageUrls = location.images.map((img: any) => {
+    const formattedImages = location.images.map((img) => {
       // Ottieni il nome del file dall'URL o dal percorso locale
       const fileName = img.localPath ? path.basename(img.localPath) : 
-                       img.url ? path.basename(new URL(img.url).pathname) : '';
+                     img.url ? path.basename(new URL(img.url).pathname) : '';
       
       // Rimuovi l'estensione per ottenere l'ID del file
       const fileId = fileName.replace(/\.[^\.]+$/, '');
       
       // Usa l'URL di Cloudinary se disponibile nella mappatura
-      return cloudinaryMapping[fileId] || img.cloudinaryUrl || img.url || '/images/location-placeholder.jpg';
+      let url = cloudinaryMapping[fileId] || img.cloudinaryUrl || img.url || '/images/location-placeholder.jpg';
+      
+      // Assicurati che l'URL utilizzi HTTPS
+      if (url && url.startsWith('http://')) {
+        url = url.replace('http://', 'https://');
+      }
+      
+      return {
+        id: img.id || fileId,
+        url: url
+      };
     }).filter(Boolean);
 
     // Formatta la location con gli URL di Cloudinary
     const formattedLocation = {
       ...location,
-      images: imageUrls,
+      images: formattedImages,
     };
 
     // Restituisci la location trovata
