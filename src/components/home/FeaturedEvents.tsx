@@ -7,20 +7,55 @@ type FeaturedEventsProps = {
   events?: Event[];
 };
 
+// Definizione del tipo per un partecipante
+type EventParticipant = {
+  id: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+};
+
+// Tipo per gli eventi di esempio
+type ExampleEvent = {
+  id: string;
+  title: string;
+  description: string;
+  date: Date;
+  price: number;
+  womenPrice: number | null;
+  image?: string | null;
+  location?: string;
+  venue?: string;
+  category?: { name: string };
+  participants?: EventParticipant[];
+  featured?: boolean;
+  locationObj?: {
+    id: string;
+    name: string;
+    description: string;
+    city?: string | null;
+    zone?: string | null;
+    address?: string | null;
+    capacity?: number | null;
+    price?: string | null;
+    features?: string[];
+    images?: { id: string; url: string; cloudinaryUrl?: string | null }[];
+  };
+  maxParticipants?: number;
+};
+
 export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
   // Utilizziamo dati di esempio se non ci sono eventi
-  const eventsToShow = events.length > 0 ? events : [
+  const exampleEvents: ExampleEvent[] = [
     {
-      id: '1',
-      title: 'Cena Stellata con Vista Mare',
-      description: 'Una serata esclusiva con menu degustazione preparato da uno chef stellato, in una villa con vista mozzafiato sul mare.',
+      id: 'example-1',
+      title: 'Cena Stellata in Terrazza',
+      description: 'Una serata esclusiva con menu degustazione preparato da uno chef stellato, in un attico con terrazza panoramica nel cuore di Milano.',
       date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 giorni da oggi
       price: 150,
-      priceFemale: 100,
-      image: '/images/events/event1.jpg',
-      location: 'Roma',
-      venue: 'Villa Medici',
-      category: { name: 'Eventi Privati' },
+      womenPrice: 100,
+      image: 'https://locationmilano.it/wp-content/uploads/2022/04/16/Location-Eventi-Foppette-7.jpg',
+      location: 'Milano',
+      venue: 'Attico Brera',
+      category: { name: 'EVENTI PRIVATI' },
       participants: [
         { id: '1', gender: 'MALE' },
         { id: '2', gender: 'MALE' },
@@ -30,16 +65,16 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       ],
     },
     {
-      id: '2',
+      id: 'example-2',
       title: 'Rooftop Cocktail Party',
-      description: 'Un esclusivo cocktail party su uno dei rooftop più belli della città, con vista panoramica e mixology d\'eccellenza.',
+      description: 'Un esclusivo cocktail party su uno dei rooftop più belli di Milano, con vista panoramica e mixology d\'eccellenza.',
       date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 giorni da oggi
       price: 80,
-      priceFemale: 0, // Gratuito per donne
-      image: '/images/events/event2.jpg',
+      womenPrice: 0,
+      image: 'https://locationmilano.it/wp-content/uploads/2022/04/16/Location-Eventi-Foppette-13.jpg',
       location: 'Milano',
-      venue: 'Palazzo Versace',
-      category: { name: 'Eventi Privati' },
+      venue: 'Terrazza Duomo',
+      category: { name: 'EVENTI PRIVATI' },
       participants: [
         { id: '1', gender: 'MALE' },
         { id: '2', gender: 'MALE' },
@@ -49,16 +84,16 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       ],
     },
     {
-      id: '3',
-      title: 'Pool Party in Villa',
-      description: 'Un esclusivo pool party in una splendida villa, con DJ set, open bar e area relax.',
+      id: 'example-3',
+      title: 'Aperitivo Esclusivo in Loft',
+      description: 'Un esclusivo aperitivo in un loft di design nel quartiere Isola di Milano, con DJ set, open bar e area lounge.',
       date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 21 giorni da oggi
       price: 100,
-      priceFemale: 50,
-      image: '/images/events/event3.jpg',
-      location: 'Como',
-      venue: 'Villa d\'Este',
-      category: { name: 'Eventi Privati' },
+      womenPrice: 50,
+      image: 'https://locationmilano.it/wp-content/uploads/2022/04/16/Location-Eventi-Foppette-15.jpg',
+      location: 'Milano',
+      venue: 'Loft Isola',
+      category: { name: 'EVENTI PRIVATI' },
       participants: [
         { id: '1', gender: 'MALE' },
         { id: '2', gender: 'MALE' },
@@ -68,6 +103,8 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       ],
     },
   ];
+
+  const eventsToShow = events.length > 0 ? events : exampleEvents;
 
   // Funzione per formattare la data
   const formatDate = (date: Date) => {
@@ -79,15 +116,22 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
   };
 
   // Funzione per contare i partecipanti per genere
-  const countParticipantsByGender = (event: any) => {
-    const participants = event.participants || event.participantsList || [];
-    const maleCount = participants.filter((p: any) => p.gender === 'MALE').length;
-    const femaleCount = participants.filter((p: any) => p.gender === 'FEMALE').length;
+  const countParticipantsByGender = (event: Event | ExampleEvent) => {
+    let participants: EventParticipant[] = [];
+    
+    if ('participants' in event && event.participants) {
+      participants = event.participants as EventParticipant[];
+    } else if ('participantsList' in event && event.participantsList) {
+      participants = event.participantsList as EventParticipant[];
+    }
+    
+    const maleCount = participants.filter((p) => p.gender === 'MALE').length;
+    const femaleCount = participants.filter((p) => p.gender === 'FEMALE').length;
     return { maleCount, femaleCount };
   };
 
-  const formatPrice = (price: number | null) => {
-    if (price === null) return '0€';
+  const formatPrice = (price: number | null | undefined) => {
+    if (price === null || price === undefined) return '0€';
     return `${price}€`;
   };
 
@@ -105,6 +149,17 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {eventsToShow.map((event) => {
             const { maleCount, femaleCount } = countParticipantsByGender(event);
+            // Determina l'immagine da usare
+            let imageUrl = event.image;
+            if (!imageUrl && 'locationObj' in event && event.locationObj?.images && event.locationObj.images.length > 0) {
+              const firstImage = event.locationObj.images[0];
+              imageUrl = 'cloudinaryUrl' in firstImage ? firstImage.cloudinaryUrl || firstImage.url : firstImage.url;
+            }
+            
+            // Determina la location e il venue
+            const locationName = event.location || ('locationObj' in event && event.locationObj?.city) || 'Italia';
+            const venueName = event.venue || ('locationObj' in event && event.locationObj?.name);
+            
             return (
               <div 
                 key={event.id} 
@@ -116,14 +171,18 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
                   <div className="absolute right-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-30"></div>
                 </div>
                 <div className="relative aspect-w-3 aspect-h-4 z-10">
-                  {event.image && (
+                  {imageUrl ? (
                     <Image 
-                      src={event.image} 
+                      src={imageUrl} 
                       alt={event.title}
                       width={600}
                       height={800}
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
+                  ) : (
+                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                      <p className="text-gray-400">Immagine non disponibile</p>
+                    </div>
                   )}
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-500"></div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
@@ -133,11 +192,11 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
                   <div className="flex items-center mb-2">
                     <span className="text-[#d4af37] text-xs font-light tracking-wide uppercase">{event.category?.name}</span>
                     <span className="mx-2 text-[#d4af37]/30">•</span>
-                    <span className="text-gray-300 text-xs font-light tracking-wide">{event.location}</span>
-                    {event.venue && (
+                    <span className="text-gray-300 text-xs font-light tracking-wide">{locationName}</span>
+                    {venueName && (
                       <>
                         <span className="mx-2 text-[#d4af37]/30">•</span>
-                        <span className="text-gray-300 text-xs font-light tracking-wide">{event.venue}</span>
+                        <span className="text-gray-300 text-xs font-light tracking-wide">{venueName}</span>
                       </>
                     )}
                   </div>
@@ -154,8 +213,8 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
                       {event.price > 0 ? (
                         <>
                           <span className="text-[#d4af37] font-semibold">{formatPrice(event.price)}</span>
-                          {event.priceFemale !== undefined && event.priceFemale !== event.price && (
-                            <span className="text-pink-400 font-semibold">{formatPrice(event.priceFemale)} <span className="text-xs">(donne)</span></span>
+                          {'womenPrice' in event && event.womenPrice !== undefined && event.womenPrice !== event.price && (
+                            <span className="text-pink-400 font-semibold">{formatPrice(event.womenPrice)} <span className="text-xs">(donne)</span></span>
                           )}
                         </>
                       ) : (
