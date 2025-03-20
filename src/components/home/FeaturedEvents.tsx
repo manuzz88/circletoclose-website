@@ -52,7 +52,7 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 giorni da oggi
       price: 150,
       womenPrice: 100,
-      image: 'https://locationmilano.it/wp-content/uploads/2022/04/16/Location-Eventi-Foppette-7.jpg',
+      image: 'https://res.cloudinary.com/dkfwehxio/image/upload/v1711048404/circletoclose/location-foppette-7_yvvgwx.jpg',
       location: 'Milano',
       venue: 'Attico Brera',
       category: { name: 'EVENTI PRIVATI' },
@@ -71,7 +71,7 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 giorni da oggi
       price: 80,
       womenPrice: 0,
-      image: 'https://locationmilano.it/wp-content/uploads/2022/04/16/Location-Eventi-Foppette-13.jpg',
+      image: 'https://res.cloudinary.com/dkfwehxio/image/upload/v1711048404/circletoclose/location-foppette-13_yvvgwx.jpg',
       location: 'Milano',
       venue: 'Terrazza Duomo',
       category: { name: 'EVENTI PRIVATI' },
@@ -90,7 +90,7 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 21 giorni da oggi
       price: 100,
       womenPrice: 50,
-      image: 'https://locationmilano.it/wp-content/uploads/2022/04/16/Location-Eventi-Foppette-15.jpg',
+      image: 'https://res.cloudinary.com/dkfwehxio/image/upload/v1711048404/circletoclose/location-foppette-15_yvvgwx.jpg',
       location: 'Milano',
       venue: 'Loft Isola',
       category: { name: 'EVENTI PRIVATI' },
