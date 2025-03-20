@@ -36,7 +36,7 @@ export type Event = {
   venue?: string;
   image?: string | null;
   price: number;
-  womenPrice?: number | null;
+  priceFemale?: number | null;
   maxParticipants?: number;
   minimumAge?: number;
   featured?: boolean;
@@ -49,15 +49,13 @@ export type Event = {
   host?: User;
   category?: Category;
   subcategory?: Subcategory;
-  participants?: EventParticipant[];
-  participantsList?: EventParticipant[];
 };
 
 export type EventParticipant = {
   id: string;
   userId: string;
   eventId: string;
-  status: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'WAITLIST';
   createdAt?: Date;
   user?: User;
   gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
@@ -74,15 +72,21 @@ export type Review = {
   user?: User;
 };
 
+// Aggiornato per corrispondere al modello Prisma e includere tutte le proprietà
 export type Location = {
   id: string;
   name: string;
-  city: string;
+  url?: string;  // URL originale della location
+  description?: string;
+  city?: string;
+  zone?: string;  // Zona di Milano
   address?: string;
-  description: string;
-  imageUrl: string;
+  location?: string; // Posizione geografica o indirizzo completo
   capacity?: number;
-  amenities?: string[];
+  price?: string;
+  features?: string[];
+  imageUrl?: string; // Immagine principale
+  images?: string[]; // Tutte le immagini disponibili
   createdAt?: Date;
   updatedAt?: Date;
 };

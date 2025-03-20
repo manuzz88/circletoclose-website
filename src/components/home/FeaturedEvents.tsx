@@ -16,7 +16,7 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       description: 'Una serata esclusiva con menu degustazione preparato da uno chef stellato, in una villa con vista mozzafiato sul mare.',
       date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 giorni da oggi
       price: 150,
-      womenPrice: 100,
+      priceFemale: 100,
       image: '/images/events/event1.jpg',
       location: 'Roma',
       venue: 'Villa Medici',
@@ -35,7 +35,7 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       description: 'Un esclusivo cocktail party su uno dei rooftop più belli della città, con vista panoramica e mixology d\'eccellenza.',
       date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 giorni da oggi
       price: 80,
-      womenPrice: 0, // Gratuito per donne
+      priceFemale: 0, // Gratuito per donne
       image: '/images/events/event2.jpg',
       location: 'Milano',
       venue: 'Palazzo Versace',
@@ -54,7 +54,7 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
       description: 'Un esclusivo pool party in una splendida villa, con DJ set, open bar e area relax.',
       date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 21 giorni da oggi
       price: 100,
-      womenPrice: 50,
+      priceFemale: 50,
       image: '/images/events/event3.jpg',
       location: 'Como',
       venue: 'Villa d\'Este',
@@ -86,6 +86,11 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
     return { maleCount, femaleCount };
   };
 
+  const formatPrice = (price: number | null) => {
+    if (price === null) return '0€';
+    return `${price}€`;
+  };
+
   return (
     <section className="py-24 bg-black">
       <div className="max-w-7xl mx-auto px-6">
@@ -103,82 +108,86 @@ export default function FeaturedEvents({ events = [] }: FeaturedEventsProps) {
             return (
               <div 
                 key={event.id} 
-                className="group relative overflow-hidden border border-[#d4af37]/10 hover:border-[#d4af37]/30 transition-colors duration-300 bg-[#0a0c0e]"
-              >
-                <div className="relative aspect-w-3 aspect-h-4">
+                className="group relative overflow-hidden border border-[#d4af37]/10 hover:border-[#d4af37]/30 transition-all duration-500 bg-[#0a0c0e] rounded-sm shadow-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]">
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-30"></div>
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-30"></div>
+                  <div className="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-30"></div>
+                  <div className="absolute right-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-30"></div>
+                </div>
+                <div className="relative aspect-w-3 aspect-h-4 z-10">
                   {event.image && (
                     <Image 
                       src={event.image} 
                       alt={event.title}
                       width={600}
                       height={800}
-                      className="object-cover"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   )}
-                  <div className="absolute inset-0 bg-black/30"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
                 </div>
                 
-                <div className="absolute inset-x-0 bottom-0 p-6">
+                <div className="absolute inset-x-0 bottom-0 p-6 z-20">
                   <div className="flex items-center mb-2">
-                    <span className="text-[#d4af37] text-xs font-light tracking-wide">{event.category?.name}</span>
+                    <span className="text-[#d4af37] text-xs font-light tracking-wide uppercase">{event.category?.name}</span>
                     <span className="mx-2 text-[#d4af37]/30">•</span>
-                    <span className="text-gray-400 text-xs font-light tracking-wide">{event.location}</span>
+                    <span className="text-gray-300 text-xs font-light tracking-wide">{event.location}</span>
                     {event.venue && (
                       <>
                         <span className="mx-2 text-[#d4af37]/30">•</span>
-                        <span className="text-gray-400 text-xs font-light tracking-wide">{event.venue}</span>
+                        <span className="text-gray-300 text-xs font-light tracking-wide">{event.venue}</span>
                       </>
                     )}
                   </div>
                   
                   <div className="flex items-center mb-4">
-                    <span className="text-gray-400 text-xs font-light tracking-wide">{formatDate(event.date)}</span>
+                    <span className="text-gray-300 text-xs font-light tracking-wide">{formatDate(event.date)}</span>
                   </div>
                   
                   <h3 className="text-xl font-light text-white mb-2 tracking-wide">{event.title}</h3>
                   <p className="text-gray-300 text-sm mb-4 font-light line-clamp-2">{event.description}</p>
                   
                   <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center">
-                      <div className="flex items-center mr-3">
+                    <div className="flex items-center space-x-2">
+                      {event.price > 0 ? (
+                        <>
+                          <span className="text-[#d4af37] font-semibold">{formatPrice(event.price)}</span>
+                          {event.priceFemale !== undefined && event.priceFemale !== event.price && (
+                            <span className="text-pink-400 font-semibold">{formatPrice(event.priceFemale)} <span className="text-xs">(donne)</span></span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-emerald-400 font-light">Ingresso gratuito</span>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center">
                         <svg className="w-4 h-4 text-blue-400 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                           <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
                         </svg>
-                        <span className="text-gray-400 text-xs">{maleCount}</span>
+                        <span className="text-gray-300 text-xs">{maleCount}</span>
                       </div>
                       <div className="flex items-center">
                         <svg className="w-4 h-4 text-pink-400 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                           <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
                         </svg>
-                        <span className="text-gray-400 text-xs">{femaleCount}</span>
+                        <span className="text-gray-300 text-xs">{femaleCount}</span>
                       </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      {event.womenPrice === 0 ? (
-                        <div>
-                          <span className="text-blue-400 text-xs font-light">Uomo: {event.price}€</span>
-                          <br />
-                          <span className="text-pink-400 text-xs font-light">Donna: Gratis</span>
-                        </div>
-                      ) : event.womenPrice ? (
-                        <div>
-                          <span className="text-blue-400 text-xs font-light">Uomo: {event.price}€</span>
-                          <br />
-                          <span className="text-pink-400 text-xs font-light">Donna: {event.womenPrice}€</span>
-                        </div>
-                      ) : (
-                        <span className="text-[#d4af37] text-xs font-light">{event.price}€</span>
-                      )}
                     </div>
                   </div>
                   
                   <Link 
                     href={`/eventi/${event.id}`} 
-                    className="inline-block text-sm text-[#d4af37] border-b border-[#d4af37]/0 hover:border-[#d4af37] transition-colors duration-300 font-light tracking-wide"
-                  >
-                    Dettagli evento
+                    className="inline-block w-full py-2.5 px-4 text-center text-white bg-[#0a0c0e] border border-[#d4af37]/20 hover:border-[#d4af37]/50 hover:bg-[#d4af37]/10 transition-all duration-300 text-sm tracking-wide uppercase">
+                    <span className="flex items-center justify-center">
+                      <span>Dettagli evento</span>
+                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                      </svg>
+                    </span>
                   </Link>
                 </div>
               </div>

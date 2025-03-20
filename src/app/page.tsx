@@ -1,9 +1,9 @@
 import Link from "next/link";
 import FeaturedEvents from "@/components/home/FeaturedEvents";
-import LuxuryShowcase from "@/components/home/LuxuryShowcase";
 import Stats from "@/components/home/Stats";
 import Testimonials from "@/components/home/Testimonials";
 import { Testimonial } from "@/types";
+import Logo from "@/components/common/Logo";
 
 export default async function Home() {
   // Dati statistici di esempio
@@ -44,21 +44,37 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Sfondo elegante e minimal */}
-        <div className="absolute inset-0 bg-[#0f1114] z-0"></div>
+        <div className="absolute inset-0 bg-black z-0"></div>
         
-        {/* Sottile elemento decorativo */}
+        {/* Elementi decorativi di lusso */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-30"></div>
-          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-30"></div>
+          {/* Bordi dorati */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-40"></div>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-40"></div>
+          <div className="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-40"></div>
+          <div className="absolute right-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-40"></div>
+          
+          {/* Sottile vignettatura */}
+          <div className="absolute inset-0 bg-radial-gradient opacity-60"></div>
+          
+          {/* Effetto particelle dorate */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 opacity-20" 
+                 style={{
+                   backgroundImage: 'radial-gradient(circle, #d4af37 1px, transparent 1px), radial-gradient(circle, #d4af37 1px, transparent 1px)',
+                   backgroundSize: '40px 40px',
+                   backgroundPosition: '0 0, 20px 20px'
+                 }}>
+            </div>
+          </div>
         </div>
         
         <div className="relative z-10 text-center max-w-3xl px-6">
-          <h1 className="text-5xl md:text-7xl font-light mb-8 text-white tracking-wider">CircleToClose</h1>
-          <p className="text-xl md:text-2xl mb-12 text-gray-300 font-light tracking-wide">Eventi privati esclusivi in location di prestigio</p>
+          <Logo size="large" withTagline={true} className="mb-10" />
+          <div className="w-24 h-1 mx-auto mb-8 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
           <Link 
             href="/eventi" 
-            className="bg-transparent border border-[#d4af37] text-[#d4af37] px-10 py-3 text-lg font-light tracking-wider hover:bg-[#d4af37]/10 transition-colors duration-300"
-          >
+            className="font-montserrat bg-transparent border border-[#d4af37] text-[#d4af37] px-10 py-3 text-lg font-light tracking-widest uppercase hover:bg-[#d4af37]/10 transition-all duration-500 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
             Scopri gli Eventi
           </Link>
         </div>
@@ -67,9 +83,6 @@ export default async function Home() {
       {/* Featured Events Section */}
       <FeaturedEvents />
 
-      {/* Luxury Showcase Section */}
-      <LuxuryShowcase />
-
       {/* Stats Section */}
       <Stats 
         totalEvents={statsData.totalEvents}
@@ -77,6 +90,21 @@ export default async function Home() {
         totalMembers={statsData.totalMembers}
         satisfactionRate={statsData.satisfactionRate}
       />
+
+      {/* Link alla pagina delle location */}
+      <div className="bg-gray-50 py-16">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="font-playfair text-3xl md:text-4xl text-gray-900 mb-6">Scopri le Nostre Location Esclusive</h2>
+          <p className="font-cormorant text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Abbiamo selezionato per te le location più prestigiose di Milano per i tuoi eventi privati ed esclusivi.
+          </p>
+          <Link 
+            href="/locations" 
+            className="font-montserrat inline-block bg-transparent border border-[#d4af37] text-[#d4af37] px-8 py-3 text-lg tracking-wider uppercase hover:bg-[#d4af37]/10 transition-all duration-500 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+            Esplora le Location
+          </Link>
+        </div>
+      </div>
 
       {/* Testimonials Section */}
       <Testimonials testimonials={testimonials} />

@@ -1,13 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['source.unsplash.com', 'localhost'],
+    domains: ['source.unsplash.com', 'localhost', 'locationmilano.it'],
     remotePatterns: [
       {
         protocol: 'http',
         hostname: 'localhost',
         port: '3001',
         pathname: '/api/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'locationmilano.it',
+        pathname: '/**',
       },
     ],
   },

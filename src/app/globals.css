@@ -1,3 +1,4 @@
+/* Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -38,4 +39,9 @@ body {
 /* Aumenta l'opacità dell'overlay per migliorare la leggibilità */
 .hero-overlay {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Aggiungi il gradiente radiale per la vignettatura */
+.bg-radial-gradient {
+  background: radial-gradient(circle, transparent 30%, black 100%);
 }
