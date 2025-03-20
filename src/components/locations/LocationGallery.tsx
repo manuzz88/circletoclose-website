@@ -18,6 +18,7 @@ interface LocationGalleryProps {
 const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName }) => {
   const [openLightbox, setOpenLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Prepara le slide per il lightbox
   const slides = images.map(src => ({ src }));
@@ -26,6 +27,16 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
   const openImageViewer = (index: number) => {
     setLightboxIndex(index);
     setOpenLightbox(true);
+  };
+
+  // Naviga all'immagine precedente
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // Naviga all'immagine successiva
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   if (!images || images.length === 0) {
@@ -43,33 +54,67 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
     <div className="mb-8">
       <h3 className="font-playfair text-2xl text-gray-900 mb-4">Galleria</h3>
       
-      {/* Immagine principale */}
-      <div 
-        className="relative h-96 w-full rounded-lg overflow-hidden cursor-pointer mb-4"
-        onClick={() => openImageViewer(0)}
-      >
+      {/* Immagine principale con frecce di navigazione */}
+      <div className="relative h-96 w-full rounded-lg overflow-hidden mb-4">
         <Image 
-          src={images[0]}
+          src={images[currentImageIndex]}
           alt={`${locationName} - Immagine principale`}
           fill
-          className="object-cover hover:scale-105 transition-transform duration-300"
+          className="object-cover transition-transform duration-300"
+          onClick={() => openImageViewer(currentImageIndex)}
+          style={{ cursor: 'pointer' }}
         />
+        
+        {/* Freccia sinistra */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); prevImage(); }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors duration-300"
+          aria-label="Immagine precedente"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        {/* Freccia destra */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); nextImage(); }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors duration-300"
+          aria-label="Immagine successiva"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        
+        {/* Indicatore del numero di foto */}
         <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 text-xs font-montserrat tracking-wider rounded-full">
-          {images.length} foto
+          {currentImageIndex + 1}/{images.length} foto
         </div>
+        
+        {/* Pulsante per aprire il lightbox */}
+        <button 
+          onClick={() => openImageViewer(currentImageIndex)}
+          className="absolute bottom-4 left-4 bg-black/70 hover:bg-black/90 text-white px-3 py-1 text-xs font-montserrat tracking-wider rounded-full transition-colors duration-300"
+          aria-label="Apri galleria a schermo intero"
+        >
+          Schermo intero
+        </button>
       </div>
       
       {/* Miniature */}
       <div className="grid grid-cols-4 gap-2">
-        {images.slice(1, 5).map((image, index) => (
+        {images.slice(0, 4).map((image, index) => (
           <div 
             key={index} 
-            className="relative h-24 rounded-lg overflow-hidden cursor-pointer"
-            onClick={() => openImageViewer(index + 1)}
+            className={`relative h-24 rounded-lg overflow-hidden cursor-pointer ${currentImageIndex === index ? 'ring-2 ring-primary' : ''}`}
+            onClick={() => {
+              setCurrentImageIndex(index);
+            }}
           >
             <Image 
               src={image}
-              alt={`${locationName} - Immagine ${index + 2}`}
+              alt={`${locationName} - Immagine ${index + 1}`}
               fill
               className="object-cover hover:scale-105 transition-transform duration-300"
             />

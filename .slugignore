@@ -1,0 +1,14 @@
+# Ignora file e directory non necessari per il deploy
+/src/data/locations.db
+/src/data/locations.json
+/src/scripts
+.env.local
+
+# Escludi tutte le immagini delle location
+/public/images/locations/*.jpg
+/public/images/locations/*.jpeg
+/public/images/locations/*.png
+/public/images/locations/*.webp
+
+# Escludi il file di mappatura Cloudinary (verrà generato durante l'esecuzione)
+/src/data/cloudinary-mapping.json

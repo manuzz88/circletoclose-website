@@ -43,3 +43,13 @@ next-env.d.ts
 # Python virtual environment
 /venv/
 /scripts/
+
+# Location images
+/public/images/locations/
+
+# Cloudinary mapping file (generated during runtime)
+/src/data/cloudinary-mapping.json
+
+# SQLite database files
+*.db
+*.sqlite

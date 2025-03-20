@@ -76,13 +76,14 @@ model Location {
 }
 
 model Image {
-  id         String   @id @default(cuid())
-  url        String
-  localPath  String
-  locationId String
-  createdAt  DateTime @default(now()) @db.Timestamp(6)
-  updatedAt  DateTime @updatedAt @db.Timestamp(6)
-  location   Location @relation(fields: [locationId], references: [id])
+  id            String   @id @default(cuid())
+  url           String
+  localPath     String
+  cloudinaryUrl String?  
+  locationId    String
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @db.Timestamp(6)
+  location      Location @relation(fields: [locationId], references: [id])
 }
 
 model Event {
