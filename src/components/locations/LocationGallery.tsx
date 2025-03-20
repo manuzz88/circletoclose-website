@@ -10,18 +10,22 @@ import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import 'yet-another-react-lightbox/plugins/counter.css';
 
-interface LocationGalleryProps {
-  images: string[];
-  locationName: string;
+interface Image {
+  url: string;
 }
 
-const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName }) => {
+interface LocationGalleryProps {
+  images: Image[];
+  locationName?: string;
+}
+
+const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName = 'Location' }) => {
   const [openLightbox, setOpenLightbox] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Prepara le slide per il lightbox
-  const slides = images.map(src => ({ src }));
+  const slides = images.map(img => ({ src: img.url }));
   
   // Apri il lightbox con l'indice specificato
   const openImageViewer = (index: number) => {
@@ -42,9 +46,8 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
   if (!images || images.length === 0) {
     return (
       <div className="mb-8">
-        <h3 className="font-playfair text-2xl text-gray-900 mb-4">Galleria</h3>
-        <div className="bg-gray-100 p-8 rounded-lg text-center">
-          <p className="font-cormorant text-lg text-gray-600">Nessuna immagine disponibile per questa location.</p>
+        <div className="bg-gray-800 p-8 rounded-lg text-center">
+          <p className="text-gray-400">Nessuna immagine disponibile.</p>
         </div>
       </div>
     );
@@ -52,12 +55,10 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
 
   return (
     <div className="mb-8">
-      <h3 className="font-playfair text-2xl text-gray-900 mb-4">Galleria</h3>
-      
       {/* Immagine principale con frecce di navigazione */}
-      <div className="relative h-96 w-full rounded-lg overflow-hidden mb-4">
+      <div className="relative aspect-video w-full rounded-lg overflow-hidden mb-4">
         <Image 
-          src={images[currentImageIndex]}
+          src={images[currentImageIndex].url.startsWith('http://') ? images[currentImageIndex].url.replace('http://', 'https://') : images[currentImageIndex].url}
           alt={`${locationName} - Immagine principale`}
           fill
           className="object-cover transition-transform duration-300"
@@ -88,14 +89,14 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
         </button>
         
         {/* Indicatore del numero di foto */}
-        <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 text-xs font-montserrat tracking-wider rounded-full">
+        <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 text-xs tracking-wider rounded-full">
           {currentImageIndex + 1}/{images.length} foto
         </div>
         
         {/* Pulsante per aprire il lightbox */}
         <button 
           onClick={() => openImageViewer(currentImageIndex)}
-          className="absolute bottom-4 left-4 bg-black/70 hover:bg-black/90 text-white px-3 py-1 text-xs font-montserrat tracking-wider rounded-full transition-colors duration-300"
+          className="absolute bottom-4 left-4 bg-black/70 hover:bg-black/90 text-white px-3 py-1 text-xs tracking-wider rounded-full transition-colors duration-300"
           aria-label="Apri galleria a schermo intero"
         >
           Schermo intero
@@ -103,31 +104,35 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
       </div>
       
       {/* Miniature */}
-      <div className="grid grid-cols-4 gap-2">
-        {images.slice(0, 4).map((image, index) => (
-          <div 
-            key={index} 
-            className={`relative h-24 rounded-lg overflow-hidden cursor-pointer ${currentImageIndex === index ? 'ring-2 ring-primary' : ''}`}
-            onClick={() => {
-              setCurrentImageIndex(index);
-            }}
-          >
-            <Image 
-              src={image}
-              alt={`${locationName} - Immagine ${index + 1}`}
-              fill
-              className="object-cover hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        ))}
-      </div>
+      {images.length > 1 && (
+        <div className="grid grid-cols-4 gap-2">
+          {images.slice(0, 4).map((image, index) => (
+            <div 
+              key={index} 
+              className={`relative h-24 rounded-lg overflow-hidden cursor-pointer ${currentImageIndex === index ? 'ring-2 ring-[#d4af37]' : ''}`}
+              onClick={() => {
+                setCurrentImageIndex(index);
+              }}
+            >
+              <Image 
+                src={image.url.startsWith('http://') ? image.url.replace('http://', 'https://') : image.url}
+                alt={`${locationName} - Immagine ${index + 1}`}
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          ))}
+        </div>
+      )}
       
       {/* Lightbox per la galleria */}
       <Lightbox
         open={openLightbox}
         close={() => setOpenLightbox(false)}
         index={lightboxIndex}
-        slides={slides}
+        slides={slides.map(slide => ({
+          src: slide.src.startsWith('http://') ? slide.src.replace('http://', 'https://') : slide.src
+        }))}
         plugins={[Thumbnails, Zoom, Counter]}
         counter={{ container: { style: { top: '30px' } } }}
         thumbnails={{
