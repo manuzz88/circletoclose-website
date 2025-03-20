@@ -25,7 +25,9 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Prepara le slide per il lightbox
-  const slides = images.map(img => ({ src: img.url }));
+  const slides = images.map(img => ({
+    src: img.url.startsWith('http://') ? img.url.replace('http://', 'https://') : img.url
+  }));
   
   // Apri il lightbox con l'indice specificato
   const openImageViewer = (index: number) => {
@@ -130,9 +132,7 @@ const LocationGallery: React.FC<LocationGalleryProps> = ({ images, locationName 
         open={openLightbox}
         close={() => setOpenLightbox(false)}
         index={lightboxIndex}
-        slides={slides.map(slide => ({
-          src: slide.src.startsWith('http://') ? slide.src.replace('http://', 'https://') : slide.src
-        }))}
+        slides={slides}
         plugins={[Thumbnails, Zoom, Counter]}
         counter={{ container: { style: { top: '30px' } } }}
         thumbnails={{
