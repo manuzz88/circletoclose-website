@@ -27,6 +27,12 @@ export type Subcategory = {
   categoryId: string;
 };
 
+export type LocationImage = {
+  id: string;
+  url: string;
+  cloudinaryUrl?: string | null;
+};
+
 export type Event = {
   id: string;
   title: string;
@@ -37,6 +43,7 @@ export type Event = {
   image?: string | null;
   price: number;
   priceFemale?: number | null;
+  womenPrice?: number | null; 
   maxParticipants?: number;
   minimumAge?: number;
   featured?: boolean;
@@ -49,6 +56,9 @@ export type Event = {
   host?: User;
   category?: Category;
   subcategory?: Subcategory;
+  participantsList?: EventParticipant[];
+  gallery?: string[];
+  locationObj?: Location;
 };
 
 export type EventParticipant = {
@@ -72,7 +82,6 @@ export type Review = {
   user?: User;
 };
 
-// Aggiornato per corrispondere al modello Prisma e includere tutte le proprietà
 export type Location = {
   id: string;
   name: string;
@@ -86,7 +95,7 @@ export type Location = {
   price?: string;
   features?: string[];
   imageUrl?: string; // Immagine principale
-  images?: string[]; // Tutte le immagini disponibili
+  images?: LocationImage[]; // Tutte le immagini disponibili
   createdAt?: Date;
   updatedAt?: Date;
 };

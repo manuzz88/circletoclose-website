@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { Location } from '@/types';
 import Logo from '@/components/common/Logo';
 import LocationGallery from '@/components/locations/LocationGallery';
+import Navbar from '@/components/common/Navbar';
+import Footer from '@/components/common/Footer';
 
 // Componente principale
 export default function LocationDetailPage() {
@@ -113,15 +115,26 @@ export default function LocationDetailPage() {
   
   // Immagini della location (usa quelle specifiche o l'immagine principale)
   const locationImages = location.images && location.images.length > 0 
-    ? location.images 
-    : (location.imageUrl ? [location.imageUrl] : []);
+    ? location.images.filter(img => img && img.url !== '') 
+    : [];
+
+  // Immagine di fallback per la location
+  const fallbackImage = '/images/location-placeholder.jpg';
+
+  // Ottieni l'URL dell'immagine da visualizzare
+  const imageUrl = locationImages.length > 0 
+    ? (locationImages[0].cloudinaryUrl || locationImages[0].url) 
+    : (location.imageUrl || fallbackImage);
 
   return (
     <main className="min-h-screen bg-gray-50">
+      {/* Navbar */}
+      <Navbar variant="default" />
+      
       {/* Hero section con immagine principale */}
       <div className="relative h-[60vh] w-full">
         <Image 
-          src={locationImages[0] || '/images/location-placeholder.jpg'}
+          src={imageUrl}
           alt={location.name}
           fill
           className="object-cover"
@@ -255,6 +268,9 @@ export default function LocationDetailPage() {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }

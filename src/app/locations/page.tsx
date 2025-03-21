@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 
 import LocationCard from '@/components/locations/LocationCard';
 import { Location } from '@/types';
+import Navbar from '@/components/common/Navbar';
+import Footer from '@/components/common/Footer';
 
 // Importa Image dinamicamente
 const Image = dynamic(() => import('next/image'), { ssr: false });
@@ -128,6 +130,9 @@ export default function LocationsPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      {/* Navbar */}
+      <Navbar variant="default" />
+      
       {/* Hero section */}
       <div className="relative h-[50vh] w-full">
         {!loading && (
@@ -254,6 +259,9 @@ export default function LocationsPage() {
           </button>
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }

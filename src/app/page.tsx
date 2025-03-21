@@ -4,12 +4,17 @@ import Stats from "@/components/home/Stats";
 import Testimonials from "@/components/home/Testimonials";
 import { Testimonial } from "@/types";
 import Logo from "@/components/common/Logo";
+import Footer from "@/components/common/Footer";
+import { getFeaturedEvents } from "@/services/eventService";
 
 export default async function Home() {
+  // Recupera gli eventi in evidenza
+  const featuredEvents = await getFeaturedEvents();
+  
   // Dati statistici di esempio
   const statsData = {
     totalEvents: 120,
-    totalLocations: 45,
+    totalLocations: 190,
     totalMembers: 3500,
     satisfactionRate: 98
   };
@@ -69,19 +74,24 @@ export default async function Home() {
           </div>
         </div>
         
-        <div className="relative z-10 text-center max-w-3xl px-6">
+        <div className="relative z-10 text-center max-w-3xl px-6 mt-0 -translate-y-10 -translate-x-8">
           <Logo size="large" withTagline={true} className="mb-10" />
-          <div className="w-24 h-1 mx-auto mb-8 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
-          <Link 
-            href="/eventi" 
-            className="font-montserrat bg-transparent border border-[#d4af37] text-[#d4af37] px-10 py-3 text-lg font-light tracking-widest uppercase hover:bg-[#d4af37]/10 transition-all duration-500 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
-            Scopri gli Eventi
-          </Link>
+          <div className="w-24 h-1 mx-auto mb-12 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
+        </div>
+        
+        {/* Indicatore di scroll */}
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-[75%] flex flex-col items-center justify-center z-20 pointer-events-none">
+          <span className="text-[#d4af37] text-xs tracking-widest uppercase mb-2 opacity-80 font-montserrat">Scopri</span>
+          <div className="animate-bounce">
+            <svg className="w-5 h-5 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
         </div>
       </section>
 
       {/* Featured Events Section */}
-      <FeaturedEvents />
+      <FeaturedEvents events={featuredEvents} maxEvents={3} showAllEventsButton={true} />
 
       {/* Stats Section */}
       <Stats 
@@ -92,15 +102,17 @@ export default async function Home() {
       />
 
       {/* Link alla pagina delle location */}
-      <div className="bg-gray-50 py-16">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="font-playfair text-3xl md:text-4xl text-gray-900 mb-6">Scopri le Nostre Location Esclusive</h2>
-          <p className="font-cormorant text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+      <div className="bg-[#111316] py-24 relative overflow-hidden border-t border-b border-[#d4af37]/20">
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url(/images/locations/location-pattern.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <div className="w-24 h-1 mx-auto mb-8 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
+          <h2 className="font-playfair text-4xl md:text-5xl text-white mb-8">Scopri le Nostre Location Esclusive</h2>
+          <p className="font-cormorant text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
             Abbiamo selezionato per te le location più prestigiose di Milano per i tuoi eventi privati ed esclusivi.
           </p>
           <Link 
             href="/locations" 
-            className="font-montserrat inline-block bg-transparent border border-[#d4af37] text-[#d4af37] px-8 py-3 text-lg tracking-wider uppercase hover:bg-[#d4af37]/10 transition-all duration-500 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+            className="font-montserrat inline-block bg-transparent border-2 border-[#d4af37] text-[#d4af37] px-10 py-4 text-lg tracking-wider uppercase hover:bg-[#d4af37] hover:text-white transition-all duration-500 hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transform hover:scale-105">
             Esplora le Location
           </Link>
         </div>
@@ -126,32 +138,7 @@ export default async function Home() {
       </section>
       
       {/* Footer */}
-      <footer className="py-16 px-6 bg-[#0a0c0e] text-white">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div>
-            <h3 className="text-2xl font-light mb-6 text-[#d4af37] tracking-wide">CircleToClose</h3>
-            <p className="text-gray-400 text-lg font-light">
-              La piattaforma per eventi privati esclusivi in location di prestigio.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-xl font-light mb-6 text-[#d4af37] tracking-wide">Link Utili</h3>
-            <ul className="space-y-4">
-              <li><Link href="/eventi" className="text-gray-400 hover:text-[#d4af37] transition-colors font-light">Eventi</Link></li>
-              <li><Link href="/chi-siamo" className="text-gray-400 hover:text-[#d4af37] transition-colors font-light">Chi Siamo</Link></li>
-              <li><Link href="/contatti" className="text-gray-400 hover:text-[#d4af37] transition-colors font-light">Contatti</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-light mb-6 text-[#d4af37] tracking-wide">Contatti</h3>
-            <p className="text-gray-400 mb-2 font-light">info@circletoclose.com</p>
-            <p className="text-gray-400 font-light">+39 123 456 7890</p>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-800 text-center text-gray-500">
-          <p className="font-light">&copy; {new Date().getFullYear()} CircleToClose. Tutti i diritti riservati.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

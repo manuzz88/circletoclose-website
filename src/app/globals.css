@@ -41,7 +41,36 @@ body {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+/* Migliora il comportamento degli elementi sticky */
+.md\:sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 10;
+}
+
 /* Aggiungi il gradiente radiale per la vignettatura */
 .bg-radial-gradient {
   background: radial-gradient(circle, transparent 30%, black 100%);
+}
+
+/* Effetto clic per le card degli eventi */
+.event-card-click-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card-click-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(212, 175, 55, 0.05);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.event-card-click-effect:hover::after {
+  opacity: 1;
 }

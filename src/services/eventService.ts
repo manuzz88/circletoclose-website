@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Event, Location, Participant } from '@/types';
+import { Event, Location } from '@/types';
 
 export async function getFeaturedEvents(limit = 6) {
   try {
@@ -54,7 +54,7 @@ export async function getFeaturedEvents(limit = 6) {
     // Dati di esempio
     const exampleEvents: Partial<Event>[] = [
       {
-        id: 'example-1',
+        id: '1',
         title: 'Cena Stellata in Terrazza',
         description: 'Una serata esclusiva con menu degustazione preparato da uno chef stellato, in un attico con terrazza panoramica nel cuore di Milano.',
         date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 giorni da oggi
@@ -68,15 +68,15 @@ export async function getFeaturedEvents(limit = 6) {
         luxuryLevel: 5,
         category: { name: 'EVENTI PRIVATI' },
         participantsList: [
-          { id: '1', gender: 'MALE' } as Participant,
-          { id: '2', gender: 'MALE' } as Participant,
-          { id: '3', gender: 'FEMALE' } as Participant,
-          { id: '4', gender: 'FEMALE' } as Participant,
-          { id: '5', gender: 'MALE' } as Participant,
+          { id: '1', gender: 'MALE' } as any,
+          { id: '2', gender: 'MALE' } as any,
+          { id: '3', gender: 'FEMALE' } as any,
+          { id: '4', gender: 'FEMALE' } as any,
+          { id: '5', gender: 'MALE' } as any,
         ],
       },
       {
-        id: 'example-2',
+        id: '2',
         title: 'Rooftop Cocktail Party',
         description: 'Un esclusivo cocktail party su uno dei rooftop più belli di Milano, con vista panoramica e mixology d\'eccellenza.',
         date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 giorni da oggi
@@ -90,15 +90,15 @@ export async function getFeaturedEvents(limit = 6) {
         luxuryLevel: 4,
         category: { name: 'EVENTI PRIVATI' },
         participantsList: [
-          { id: '1', gender: 'MALE' } as Participant,
-          { id: '2', gender: 'MALE' } as Participant,
-          { id: '3', gender: 'FEMALE' } as Participant,
-          { id: '4', gender: 'FEMALE' } as Participant,
-          { id: '5', gender: 'FEMALE' } as Participant,
+          { id: '1', gender: 'MALE' } as any,
+          { id: '2', gender: 'MALE' } as any,
+          { id: '3', gender: 'FEMALE' } as any,
+          { id: '4', gender: 'FEMALE' } as any,
+          { id: '5', gender: 'FEMALE' } as any,
         ],
       },
       {
-        id: 'example-3',
+        id: '3',
         title: 'Aperitivo Esclusivo in Loft',
         description: 'Un esclusivo aperitivo in un loft di design nel quartiere Isola di Milano, con DJ set, open bar e area lounge.',
         date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 21 giorni da oggi
@@ -112,11 +112,11 @@ export async function getFeaturedEvents(limit = 6) {
         luxuryLevel: 4,
         category: { name: 'EVENTI PRIVATI' },
         participantsList: [
-          { id: '1', gender: 'MALE' } as Participant,
-          { id: '2', gender: 'MALE' } as Participant,
-          { id: '3', gender: 'FEMALE' } as Participant,
-          { id: '4', gender: 'FEMALE' } as Participant,
-          { id: '5', gender: 'MALE' } as Participant,
+          { id: '1', gender: 'MALE' } as any,
+          { id: '2', gender: 'MALE' } as any,
+          { id: '3', gender: 'FEMALE' } as any,
+          { id: '4', gender: 'FEMALE' } as any,
+          { id: '5', gender: 'MALE' } as any,
         ],
       },
     ];
@@ -136,6 +136,92 @@ export async function getFeaturedEvents(limit = 6) {
     console.error('Error fetching featured events:', error);
     return [];
   }
+}
+
+export async function getAllEvents() {
+  console.log('Getting all events including featured and non-featured');
+  
+  // Otteniamo gli eventi in evidenza
+  const featuredEvents = await getFeaturedEvents(100);
+  
+  // Otteniamo anche gli eventi non in evidenza
+  let nonFeaturedEvents: Event[] = [];
+  
+  try {
+    const dbEvents = await prisma.event.findMany({
+      where: {
+        featured: false,  // Solo eventi NON in evidenza
+        date: {
+          gte: new Date(), // Solo eventi futuri
+        },
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        locationObj: {
+          include: {
+            images: true,
+          },
+        },
+        participantsList: true,
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+    
+    // Stampiamo il primo evento per vedere la sua struttura
+    if (dbEvents.length > 0) {
+      console.log('First event structure:', JSON.stringify(dbEvents[0], null, 2));
+    }
+    
+    // Trasformiamo i risultati del database in oggetti Event compatibili
+    nonFeaturedEvents = dbEvents.map(event => {
+      // Creiamo un nuovo array di partecipanti con il formato corretto
+      const adaptedParticipants = event.participantsList ? 
+        event.participantsList.map(p => ({
+          id: p.userId, // Usiamo userId come id
+          userId: p.userId,
+          eventId: p.eventId,
+          status: (p.status as "PENDING" | "APPROVED" | "REJECTED") || "PENDING",
+          gender: 'PREFER_NOT_TO_SAY' as 'PREFER_NOT_TO_SAY' // Valore predefinito
+        })) : [];
+      
+      // Creiamo un nuovo oggetto Event con i dati corretti
+      const newEvent: Event = {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        date: new Date(event.date),
+        price: event.price,
+        // Aggiungiamo solo i campi che sappiamo esistere
+        // e usiamo i campi opzionali con cautela
+        image: event.image || undefined,
+        maxParticipants: event.maxParticipants || undefined,
+        minimumAge: event.minimumAge || undefined,
+        featured: event.featured || false,
+        locationObj: event.locationObj || undefined,
+        participantsList: adaptedParticipants as any // Usiamo any per evitare problemi di tipo
+      };
+      
+      return newEvent;
+    });
+  } catch (error) {
+    console.error('Error fetching non-featured events:', error);
+  }
+  
+  // Combiniamo gli eventi in evidenza con quelli non in evidenza
+  const allEvents = [...featuredEvents, ...nonFeaturedEvents];
+  
+  // Ordiniamo per data (i più vicini prima)
+  allEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  console.log(`Total events: ${allEvents.length} (Featured: ${featuredEvents.length}, Non-featured: ${nonFeaturedEvents.length})`);
+  
+  return allEvents;
 }
 
 export async function getEventDetails(id: string): Promise<Event | null> {
@@ -165,8 +251,23 @@ export async function getEventDetails(id: string): Promise<Event | null> {
             eventId: p.eventId,
             status: p.status
           }))
-        };
-        return transformedEvent as unknown as Event;
+        } as unknown as Event;
+
+        // Assicuriamoci che locationObj sia sempre presente
+        if (!transformedEvent.locationObj && (transformedEvent.venue || transformedEvent.location)) {
+          transformedEvent.locationObj = {
+            id: 'temp-location-id',
+            name: transformedEvent.venue || 'Location non specificata',
+            description: 'Descrizione non disponibile',
+            address: transformedEvent.location || 'Milano',
+            city: transformedEvent.location || 'Milano',
+            capacity: transformedEvent.maxParticipants || 100,
+            features: [],
+            images: []
+          } as unknown as Location;
+        }
+
+        return transformedEvent;
       }
     } catch (e) {
       console.log('Errore nel recuperare l\'evento dal database, uso dati di esempio', e);
@@ -175,8 +276,8 @@ export async function getEventDetails(id: string): Promise<Event | null> {
     // Proviamo a recuperare le location per usarle nei dati di esempio
     let location: Location | null = null;
     try {
-      if (id.startsWith('example-')) {
-        const locationIndex = parseInt(id.split('-')[1]) - 1;
+      if (id === '1' || id === '2' || id === '3' || id.startsWith('example-')) {
+        const locationIndex = id.startsWith('example-') ? parseInt(id.split('-')[1]) - 1 : parseInt(id) - 1;
         const locations = await prisma.location.findMany({
           include: {
             images: true,
@@ -193,9 +294,9 @@ export async function getEventDetails(id: string): Promise<Event | null> {
     }
     
     // Se l'evento non esiste nel database, restituisci dati di esempio
-    if (id === 'example-1') {
+    if (id === '1' || id === 'example-1') {
       const event: Partial<Event> = {
-        id: 'example-1',
+        id: '1',
         title: 'Cena Stellata in Terrazza',
         description: 'Una serata esclusiva con menu degustazione preparato da uno chef stellato, in un attico con terrazza panoramica nel cuore di Milano. Il nostro chef stellato preparerà un menu di 7 portate con abbinamento di vini pregiati. La location è un attico privato con una terrazza panoramica dove verrà servita la cena.',
         date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 giorni da oggi
@@ -218,11 +319,11 @@ export async function getEventDetails(id: string): Promise<Event | null> {
         minimumAge: 25,
         category: { name: 'EVENTI PRIVATI' },
         participantsList: [
-          { id: '1', gender: 'MALE' } as Participant,
-          { id: '2', gender: 'MALE' } as Participant,
-          { id: '3', gender: 'FEMALE' } as Participant,
-          { id: '4', gender: 'FEMALE' } as Participant,
-          { id: '5', gender: 'MALE' } as Participant,
+          { id: '1', gender: 'MALE' } as any,
+          { id: '2', gender: 'MALE' } as any,
+          { id: '3', gender: 'FEMALE' } as any,
+          { id: '4', gender: 'FEMALE' } as any,
+          { id: '5', gender: 'MALE' } as any,
         ],
       };
       
@@ -231,12 +332,24 @@ export async function getEventDetails(id: string): Promise<Event | null> {
         event.locationId = location.id;
         event.location = location.city || 'Milano';
         event.venue = location.name;
+      } else {
+        // Se non abbiamo una location dal database, creiamo una location fittizia
+        event.locationObj = {
+          id: 'temp-location-id',
+          name: event.venue || 'Location non specificata',
+          description: 'Descrizione non disponibile',
+          address: event.location || 'Milano',
+          city: event.location || 'Milano',
+          capacity: event.maxParticipants || 100,
+          features: [],
+          images: []
+        } as unknown as Location;
       }
       
       return event as Event;
-    } else if (id === 'example-2') {
+    } else if (id === '2' || id === 'example-2') {
       const event: Partial<Event> = {
-        id: 'example-2',
+        id: '2',
         title: 'Rooftop Cocktail Party',
         description: 'Un esclusivo cocktail party su uno dei rooftop più belli di Milano, con vista panoramica e mixology d\'eccellenza. I nostri bartender preparano cocktail signature e classici rivisitati con ingredienti premium. Goditi la vista mozzafiato della città mentre ascolti musica selezionata dal nostro DJ.',
         date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 giorni da oggi
@@ -259,11 +372,11 @@ export async function getEventDetails(id: string): Promise<Event | null> {
         minimumAge: 21,
         category: { name: 'EVENTI PRIVATI' },
         participantsList: [
-          { id: '1', gender: 'MALE' } as Participant,
-          { id: '2', gender: 'MALE' } as Participant,
-          { id: '3', gender: 'FEMALE' } as Participant,
-          { id: '4', gender: 'FEMALE' } as Participant,
-          { id: '5', gender: 'FEMALE' } as Participant,
+          { id: '1', gender: 'MALE' } as any,
+          { id: '2', gender: 'MALE' } as any,
+          { id: '3', gender: 'FEMALE' } as any,
+          { id: '4', gender: 'FEMALE' } as any,
+          { id: '5', gender: 'FEMALE' } as any,
         ],
       };
       
@@ -272,12 +385,24 @@ export async function getEventDetails(id: string): Promise<Event | null> {
         event.locationId = location.id;
         event.location = location.city || 'Milano';
         event.venue = location.name;
+      } else {
+        // Se non abbiamo una location dal database, creiamo una location fittizia
+        event.locationObj = {
+          id: 'temp-location-id',
+          name: event.venue || 'Location non specificata',
+          description: 'Descrizione non disponibile',
+          address: event.location || 'Milano',
+          city: event.location || 'Milano',
+          capacity: event.maxParticipants || 100,
+          features: [],
+          images: []
+        } as unknown as Location;
       }
       
       return event as Event;
-    } else if (id === 'example-3') {
+    } else if (id === '3' || id === 'example-3') {
       const event: Partial<Event> = {
-        id: 'example-3',
+        id: '3',
         title: 'Aperitivo Esclusivo in Loft',
         description: 'Un esclusivo aperitivo in un loft di design nel quartiere Isola di Milano, con DJ set, open bar e area lounge. Il loft è stato recentemente ristrutturato con un design moderno e minimalista. Il nostro DJ suonerà i migliori brani house e deep house per creare l\'atmosfera perfetta.',
         date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 21 giorni da oggi
@@ -300,11 +425,11 @@ export async function getEventDetails(id: string): Promise<Event | null> {
         minimumAge: 21,
         category: { name: 'EVENTI PRIVATI' },
         participantsList: [
-          { id: '1', gender: 'MALE' } as Participant,
-          { id: '2', gender: 'MALE' } as Participant,
-          { id: '3', gender: 'FEMALE' } as Participant,
-          { id: '4', gender: 'FEMALE' } as Participant,
-          { id: '5', gender: 'MALE' } as Participant,
+          { id: '1', gender: 'MALE' } as any,
+          { id: '2', gender: 'MALE' } as any,
+          { id: '3', gender: 'FEMALE' } as any,
+          { id: '4', gender: 'FEMALE' } as any,
+          { id: '5', gender: 'MALE' } as any,
         ],
       };
       
@@ -313,6 +438,18 @@ export async function getEventDetails(id: string): Promise<Event | null> {
         event.locationId = location.id;
         event.location = location.city || 'Milano';
         event.venue = location.name;
+      } else {
+        // Se non abbiamo una location dal database, creiamo una location fittizia
+        event.locationObj = {
+          id: 'temp-location-id',
+          name: event.venue || 'Location non specificata',
+          description: 'Descrizione non disponibile',
+          address: event.location || 'Milano',
+          city: event.location || 'Milano',
+          capacity: event.maxParticipants || 100,
+          features: [],
+          images: []
+        } as unknown as Location;
       }
       
       return event as Event;
