@@ -24,13 +24,13 @@ const Logo: React.FC<LogoProps> = ({
   const sizeClasses = {
     small: 'text-xl',
     medium: 'text-2xl',
-    large: 'text-4xl md:text-6xl',
+    large: 'text-5xl md:text-7xl',
   };
 
   const taglineClasses = {
     small: 'text-xs',
     medium: 'text-sm',
-    large: 'text-base md:text-xl',
+    large: 'text-lg md:text-2xl',
   };
 
   return (
@@ -38,7 +38,7 @@ const Logo: React.FC<LogoProps> = ({
       <Link href="/" className="flex flex-col items-center">
         <div className="relative">
           {/* Cerchio dorato dietro la C iniziale */}
-          <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-8 h-8 md:w-12 md:h-12 rounded-full border border-[#d4af37]/30 z-0"></div>
+          <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-10 h-10 md:w-16 md:h-16 rounded-full border border-[#d4af37]/30 z-0"></div>
           
           {/* Logo testuale */}
           <h1 className={`font-playfair ${logoClasses[variant]} ${sizeClasses[size]} tracking-widest relative z-10 flex items-center`}>

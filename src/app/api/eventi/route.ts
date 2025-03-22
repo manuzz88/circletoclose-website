@@ -104,3 +104,44 @@ export async function GET() {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function POST(request) {
+  try {
+    const data = await request.json();
+    
+    // Validazione dei dati di input
+    if (!data.title || !data.description || !data.date || !data.location || !data.venue) {
+      return NextResponse.json({ error: 'Dati mancanti o non validi' }, { status: 400 });
+    }
+    
+    // Creazione dell'evento nel database
+    const newEvent = await prisma.event.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        date: new Date(data.date),
+        maxParticipants: data.maxParticipants || 30,
+        price: data.price || 0,
+        womenPrice: data.womenPrice !== undefined ? data.womenPrice : null,
+        image: data.image || '',
+        location: data.location,
+        venue: data.venue,
+        featured: data.featured || false,
+        luxuryLevel: data.luxuryLevel || 4,
+        // Se categoryId u00e8 fornito, collega la categoria
+        ...(data.categoryId ? {
+          category: {
+            connect: {
+              id: data.categoryId
+            }
+          }
+        } : {}),
+      },
+    });
+    
+    return NextResponse.json(newEvent, { status: 201 });
+  } catch (error) {
+    console.error('Error creating event:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
