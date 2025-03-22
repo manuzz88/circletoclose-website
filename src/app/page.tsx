@@ -74,13 +74,13 @@ export default async function Home() {
           </div>
         </div>
         
-        <div className="relative z-10 text-center max-w-3xl px-6 mt-0 -translate-y-10 -translate-x-8">
+        <div className="relative z-10 text-center max-w-3xl px-6 mt-0">
           <Logo size="large" withTagline={true} className="mb-10" />
           <div className="w-24 h-1 mx-auto mb-12 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
         </div>
         
         {/* Indicatore di scroll */}
-        <div className="absolute bottom-12 left-1/2 transform -translate-x-[75%] flex flex-col items-center justify-center z-20 pointer-events-none">
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center z-20 pointer-events-none">
           <span className="text-[#d4af37] text-xs tracking-widest uppercase mb-2 opacity-80 font-montserrat">Scopri</span>
           <div className="animate-bounce">
             <svg className="w-5 h-5 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
