@@ -129,12 +129,20 @@ export default async function Home() {
           <p className="text-xl mb-12 text-gray-300 font-light leading-relaxed">
             Partecipa ai nostri eventi esclusivi e vivi esperienze uniche in location straordinarie
           </p>
-          <Link 
-            href="/registrazione" 
-            className="bg-transparent border border-[#d4af37] text-[#d4af37] px-10 py-3 text-lg font-light tracking-wider hover:bg-[#d4af37]/10 transition-colors duration-300"
-          >
-            Registrati Ora
-          </Link>
+          <div className="flex justify-center space-x-4">
+            <Link 
+              href="/accedi" 
+              className="bg-transparent border border-[#d4af37] text-[#d4af37] px-8 py-3 text-lg font-light tracking-wider hover:bg-[#d4af37]/10 transition-colors duration-300"
+            >
+              Accedi
+            </Link>
+            <Link 
+              href="/registrazione" 
+              className="bg-[#d4af37] border border-[#d4af37] text-black px-8 py-3 text-lg font-light tracking-wider hover:bg-[#c9a431] transition-colors duration-300"
+            >
+              Registrati
+            </Link>
+          </div>
         </div>
       </section>
       

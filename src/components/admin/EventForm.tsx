@@ -2,7 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Event } from '@/types';
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Event {
+  id?: string;
+  title: string;
+  description: string;
+  date: Date | string;
+  maxParticipants: number;
+  price: number;
+  womenPrice?: number | null;
+  image?: string;
+  locationString?: string;
+  locationDetails?: string;
+  featured?: boolean;
+  luxuryLevel?: number;
+  category?: Category;
+  subcategoryId?: string;
+}
 
 interface EventFormProps {
   event?: Event;
@@ -26,10 +47,11 @@ export default function EventForm({ event, onSubmit, isSubmitting }: EventFormPr
     featured: false,
     luxuryLevel: 4,
     categoryId: '',
+    subcategoryId: '1', // Valore di default
   });
 
   // Stato per le categorie disponibili
-  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categories, setCategories] = useState<Array<Category>>([]);
   
   // Stato per le locations disponibili
   const [locations, setLocations] = useState<Array<{ id: string; name: string; address: string }>>([]);
@@ -45,13 +67,14 @@ export default function EventForm({ event, onSubmit, isSubmitting }: EventFormPr
         time: eventDate.toTimeString().split(' ')[0].substring(0, 5),
         maxParticipants: event.maxParticipants || 30,
         price: event.price || 0,
-        womenPrice: event.womenPrice !== undefined ? event.womenPrice : 0,
+        womenPrice: event.womenPrice !== undefined && event.womenPrice !== null ? event.womenPrice : 0,
         image: event.image || '',
-        location: event.location || '',
-        venue: event.venue || '',
+        location: event.locationString || '',
+        venue: event.locationDetails || '',
         featured: event.featured || false,
         luxuryLevel: event.luxuryLevel || 4,
         categoryId: event.category?.id || '',
+        subcategoryId: event.subcategoryId || '1',
       });
     }
   }, [event]);
@@ -113,11 +136,13 @@ export default function EventForm({ event, onSubmit, isSubmitting }: EventFormPr
       date: dateTime.toISOString(),
     };
     
+    // Crea una copia dei dati per rimuovere il campo time
+    const dataToSubmit = { ...eventData };
     // Rimuove il campo time che non è necessario per l'API
-    delete eventData.time;
+    delete (dataToSubmit as any).time;
     
     // Invia i dati al componente padre
-    await onSubmit(eventData);
+    await onSubmit(dataToSubmit);
   };
 
   return (

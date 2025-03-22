@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
@@ -10,6 +10,7 @@ export async function GET() {
           category: {
             select: {
               name: true,
+              id: true,
             },
           },
           locationObj: true,
@@ -39,11 +40,11 @@ export async function GET() {
         price: 150,
         womenPrice: 100,
         image: '/images/events/event1.jpg',
-        location: 'Roma',
-        venue: 'Villa Medici',
+        locationString: 'Roma',
+        locationDetails: 'Villa Medici', // Usando locationDetails invece di venue
         featured: true,
         luxuryLevel: 5,
-        category: { name: 'Eventi Privati' },
+        category: { name: 'Eventi Privati', id: 'cat1' },
         participantsList: [
           { id: '1', gender: 'MALE' },
           { id: '2', gender: 'MALE' },
@@ -61,11 +62,11 @@ export async function GET() {
         price: 80,
         womenPrice: 0, // Gratuito per donne
         image: '/images/events/event2.jpg',
-        location: 'Milano',
-        venue: 'Palazzo Versace',
+        locationString: 'Milano',
+        locationDetails: 'Palazzo Versace', // Usando locationDetails invece di venue
         featured: true,
         luxuryLevel: 4,
-        category: { name: 'Eventi Privati' },
+        category: { name: 'Eventi Privati', id: 'cat1' },
         participantsList: [
           { id: '1', gender: 'MALE' },
           { id: '2', gender: 'MALE' },
@@ -83,11 +84,11 @@ export async function GET() {
         price: 100,
         womenPrice: 50,
         image: '/images/events/event3.jpg',
-        location: 'Como',
-        venue: 'Villa d\'Este',
+        locationString: 'Como',
+        locationDetails: 'Villa d\'Este', // Usando locationDetails invece di venue
         featured: true,
         luxuryLevel: 4,
-        category: { name: 'Eventi Privati' },
+        category: { name: 'Eventi Privati', id: 'cat1' },
         participantsList: [
           { id: '1', gender: 'MALE' },
           { id: '2', gender: 'MALE' },
@@ -105,12 +106,12 @@ export async function GET() {
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     
     // Validazione dei dati di input
-    if (!data.title || !data.description || !data.date || !data.location || !data.venue) {
+    if (!data.title || !data.description || !data.date || !data.location) {
       return NextResponse.json({ error: 'Dati mancanti o non validi' }, { status: 400 });
     }
     
@@ -124,18 +125,20 @@ export async function POST(request) {
         price: data.price || 0,
         womenPrice: data.womenPrice !== undefined ? data.womenPrice : null,
         image: data.image || '',
-        location: data.location,
-        venue: data.venue,
+        locationString: data.location,
+        locationDetails: data.venue || '',
         featured: data.featured || false,
         luxuryLevel: data.luxuryLevel || 4,
-        // Se categoryId u00e8 fornito, collega la categoria
-        ...(data.categoryId ? {
-          category: {
-            connect: {
-              id: data.categoryId
-            }
+        category: {
+          connect: {
+            id: data.categoryId || '1' // Valore di default se non fornito
           }
-        } : {}),
+        },
+        subcategory: {
+          connect: {
+            id: data.subcategoryId || '1' // Valore di default se non fornito
+          }
+        }
       },
     });
     
