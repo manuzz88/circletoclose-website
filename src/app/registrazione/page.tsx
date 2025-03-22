@@ -16,6 +16,9 @@ export default function RegistrationPage() {
     confirmPassword: '',
     gender: '',
     birthDate: '',
+    phoneNumber: '',
+    country: '',
+    city: '',
     acceptTerms: false,
     documentType: 'IDENTITY_CARD', 
   });
@@ -46,7 +49,7 @@ export default function RegistrationPage() {
 
   const handleNextStep = () => {
     if (currentStep === 1) {
-      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.gender || !formData.birthDate) {
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.gender || !formData.birthDate || !formData.phoneNumber || !formData.country || !formData.city) {
         setError('Compila tutti i campi obbligatori');
         return;
       }
@@ -145,6 +148,9 @@ export default function RegistrationPage() {
         name: `${formData.firstName} ${formData.lastName}`,
         dateOfBirth: formData.birthDate,
         gender: formData.gender,
+        phoneNumber: formData.phoneNumber,
+        country: formData.country,
+        city: formData.city,
         documentUrl: documentUrl,
         documentType: formData.documentType,
       };
@@ -335,7 +341,6 @@ export default function RegistrationPage() {
                         <option value="">Seleziona</option>
                         <option value="MALE">Uomo</option>
                         <option value="FEMALE">Donna</option>
-                        <option value="OTHER">Altro</option>
                       </select>
                     </div>
                   </div>
@@ -351,6 +356,59 @@ export default function RegistrationPage() {
                         type="date"
                         required
                         value={formData.birthDate}
+                        onChange={handleChange}
+                        className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-300">
+                    Numero di telefono
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      type="text"
+                      required
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="country" className="block text-sm font-medium text-gray-300">
+                      Paese di origine
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="country"
+                        name="country"
+                        type="text"
+                        required
+                        value={formData.country}
+                        onChange={handleChange}
+                        className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="city" className="block text-sm font-medium text-gray-300">
+                      Città di residenza
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="city"
+                        name="city"
+                        type="text"
+                        required
+                        value={formData.city}
                         onChange={handleChange}
                         className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm"
                       />
@@ -494,13 +552,24 @@ export default function RegistrationPage() {
                         <p className="text-gray-400">Genere:</p>
                         <p className="text-white">
                           {formData.gender === 'MALE' ? 'Uomo' : 
-                           formData.gender === 'FEMALE' ? 'Donna' : 
-                           formData.gender === 'OTHER' ? 'Altro' : ''}
+                           formData.gender === 'FEMALE' ? 'Donna' : ''}
                         </p>
                       </div>
                       <div>
                         <p className="text-gray-400">Data di nascita:</p>
                         <p className="text-white">{new Date(formData.birthDate).toLocaleDateString('it-IT')}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Numero di telefono:</p>
+                        <p className="text-white">{formData.phoneNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Paese di origine:</p>
+                        <p className="text-white">{formData.country}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Città di residenza:</p>
+                        <p className="text-white">{formData.city}</p>
                       </div>
                       <div>
                         <p className="text-gray-400">Tipo documento:</p>

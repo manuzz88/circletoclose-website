@@ -9,13 +9,15 @@ export type User = {
   role?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+  gender?: 'MALE' | 'FEMALE';
   isVerified?: boolean;
   documentUrl?: string | null;
   documentType?: string | null;
   verificationNotes?: string | null;
   image?: string | null;
   phoneNumber?: string | null;
+  country?: string | null;
+  city?: string | null;
   dateOfBirth?: Date | null;
   isAdmin?: boolean;
   emailVerified?: boolean;
@@ -78,7 +80,7 @@ export type EventParticipant = {
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'WAITLIST';
   createdAt?: Date;
   user?: User;
-  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+  gender?: 'MALE' | 'FEMALE';
 };
 
 export type Review = {

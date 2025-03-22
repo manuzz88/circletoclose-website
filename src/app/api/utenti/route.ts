@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 
+// Definiamo un tipo per i dati aggiuntivi dell'utente
+type UserAdditionalData = {
+  documentUrl: string | null;
+  documentType: string | null;
+  verificationNotes: string | null;
+  country: string | null;
+  city: string | null;
+};
+
 // GET /api/utenti - Recupera tutti gli utenti
 export async function GET() {
   try {
@@ -21,40 +30,52 @@ export async function GET() {
         gender: true,
         isVerified: true,
         phoneNumber: true,
-        // Rimuoviamo i campi del documento che potrebbero non esistere nel database
       },
       orderBy: {
         createdAt: 'desc', // Ordina per data di creazione (i più recenti prima)
       },
     });
 
-    // Recuperiamo i campi dei documenti separatamente
+    // Se non ci sono utenti, restituisci un array vuoto
+    if (!users || users.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    // Recuperiamo tutti i dati aggiuntivi con una query SQL raw
     const userIds = users.map(user => user.id);
-    const documentsData = await prisma.$queryRaw`
-      SELECT id, "documentUrl", "documentType", "verificationNotes"
+    const additionalData = await prisma.$queryRaw`
+      SELECT id, "documentUrl", "documentType", "verificationNotes", country, city
       FROM "User"
       WHERE id IN (${Prisma.join(userIds)})
     `;
 
-    // Creiamo una mappa per i dati dei documenti
-    const documentsMap: Record<string, any> = {};
-    if (Array.isArray(documentsData)) {
-      documentsData.forEach((doc: any) => {
-        documentsMap[doc.id] = {
-          documentUrl: doc.documentUrl,
-          documentType: doc.documentType,
-          verificationNotes: doc.verificationNotes
+    // Creiamo una mappa per i dati aggiuntivi
+    const additionalDataMap: Record<string, UserAdditionalData> = {};
+    if (Array.isArray(additionalData)) {
+      additionalData.forEach((data: any) => {
+        additionalDataMap[data.id] = {
+          documentUrl: data.documentUrl,
+          documentType: data.documentType,
+          verificationNotes: data.verificationNotes,
+          country: data.country,
+          city: data.city,
         };
       });
     }
 
-    // Combiniamo i dati degli utenti con i dati dei documenti
-    const usersWithDocuments = users.map(user => ({
+    // Combiniamo i dati degli utenti con i dati aggiuntivi
+    const completeUsers = users.map(user => ({
       ...user,
-      ...(documentsMap[user.id] || { documentUrl: null, documentType: null, verificationNotes: null })
+      ...(additionalDataMap[user.id] || {
+        documentUrl: null,
+        documentType: null,
+        verificationNotes: null,
+        country: null,
+        city: null,
+      }),
     }));
 
-    return NextResponse.json(usersWithDocuments);
+    return NextResponse.json(completeUsers);
   } catch (error) {
     console.error('Errore nel recupero degli utenti:', error);
     return NextResponse.json(
@@ -64,41 +85,38 @@ export async function GET() {
   }
 }
 
-// POST /api/utenti - Crea un nuovo utente (per test)
+// POST /api/utenti - Crea un nuovo utente
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+    console.log('Dati ricevuti per la creazione dell\'utente:', data);
 
     // Validazione dei dati
-    if (!data.email || !data.password) {
+    if (!data.email || !data.name) {
       return NextResponse.json(
-        { error: 'Email e password sono obbligatorie' },
+        { error: 'Email e nome sono campi obbligatori' },
         { status: 400 }
       );
     }
 
-    // Controlla se l'utente esiste già
+    // Verifica se l'utente esiste già
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
-      select: { id: true, email: true } // Selezioniamo solo i campi che sappiamo esistere
     });
 
     if (existingUser) {
       return NextResponse.json(
         { error: 'Un utente con questa email esiste già' },
-        { status: 400 }
+        { status: 409 }
       );
     }
 
-    // In un'implementazione reale, la password dovrebbe essere hashata
-    // const hashedPassword = await bcrypt.hash(data.password, 10);
-
-    // Prepara i dati standard dell'utente
+    // Prepara i dati dell'utente
     const userData = {
       email: data.email,
-      password: data.password, // In produzione: hashedPassword
       name: data.name,
-      dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
+      password: data.password, // Nota: in produzione, dovresti hashare la password
+      image: data.image,
       gender: data.gender,
       phoneNumber: data.phoneNumber,
       isVerified: false, // Gli utenti appena registrati non sono verificati
@@ -111,6 +129,7 @@ export async function POST(request: Request) {
         id: true,
         email: true,
         name: true,
+        image: true,
         createdAt: true,
         updatedAt: true,
         emailVerified: true,
@@ -123,40 +142,44 @@ export async function POST(request: Request) {
       }
     });
 
-    // Aggiorniamo i campi del documento separatamente
-    if (data.documentUrl || data.documentType) {
-      console.log('Dati documento ricevuti:', { documentUrl: data.documentUrl, documentType: data.documentType });
-      
+    // Aggiorniamo i campi aggiuntivi separatamente con una query SQL raw
+    if (data.country || data.city || data.documentUrl || data.documentType) {
       try {
-        // Utilizziamo direttamente la query SQL parametrizzata
         await prisma.$executeRaw`
           UPDATE "User"
-          SET "documentUrl" = ${data.documentUrl}, "documentType" = ${data.documentType}
+          SET country = ${data.country || null}, 
+              city = ${data.city || null},
+              "documentUrl" = ${data.documentUrl || null}, 
+              "documentType" = ${data.documentType || null}
           WHERE id = ${newUser.id}
         `;
-        console.log('Aggiornamento documento completato con successo');
+        console.log('Aggiornamento dati aggiuntivi completato con successo');
       } catch (dbError) {
-        console.error('Errore nell\'aggiornamento del documento:', dbError);
+        console.error('Errore nell\'aggiornamento dei dati aggiuntivi:', dbError);
       }
-    } else {
-      console.log('Nessun dato documento ricevuto');
     }
 
-    // Recuperiamo i campi dei documenti per includerli nella risposta
-    const userWithDocuments = await prisma.$queryRaw`
-      SELECT "documentUrl", "documentType", "verificationNotes"
+    // Recuperiamo i dati aggiuntivi per includerli nella risposta
+    const additionalData = await prisma.$queryRaw`
+      SELECT "documentUrl", "documentType", "verificationNotes", country, city
       FROM "User"
       WHERE id = ${newUser.id}
     `;
     
-    const documentFields = Array.isArray(userWithDocuments) && userWithDocuments.length > 0 
-      ? userWithDocuments[0] 
-      : { documentUrl: null, documentType: null, verificationNotes: null };
+    const additionalFields: UserAdditionalData = Array.isArray(additionalData) && additionalData.length > 0 
+      ? additionalData[0] as UserAdditionalData
+      : { 
+          documentUrl: null, 
+          documentType: null, 
+          verificationNotes: null,
+          country: null,
+          city: null
+        };
 
     // Combiniamo i risultati
     const completeUser = {
       ...newUser,
-      ...documentFields
+      ...additionalFields
     };
 
     return NextResponse.json(completeUser, { status: 201 });

@@ -5,15 +5,21 @@ import { User } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { it } from 'date-fns/locale';
 
+// Aggiorniamo l'interfaccia User per includere i nuovi campi
+interface ExtendedUser extends User {
+  country?: string | null;
+  city?: string | null;
+}
+
 interface UsersTableProps {
-  users: User[];
+  users: ExtendedUser[];
   onVerifyUser: (userId: string, isVerified: boolean, verificationNotes?: string) => Promise<void>;
 }
 
 export default function UsersTable({ users, onVerifyUser }: UsersTableProps) {
   const [filter, setFilter] = useState<'all' | 'verified' | 'pending' | 'rejected'>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<ExtendedUser | null>(null);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [verificationNotes, setVerificationNotes] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -63,7 +69,7 @@ export default function UsersTable({ users, onVerifyUser }: UsersTableProps) {
   };
 
   // Apre il modal per visualizzare il documento
-  const openDocumentModal = (user: User) => {
+  const openDocumentModal = (user: ExtendedUser) => {
     setSelectedUser(user);
     setVerificationNotes(user.verificationNotes || '');
     setShowDocumentModal(true);
@@ -93,7 +99,7 @@ export default function UsersTable({ users, onVerifyUser }: UsersTableProps) {
   };
 
   // Determina lo stato di verifica dell'utente
-  const getUserVerificationStatus = (user: User) => {
+  const getUserVerificationStatus = (user: ExtendedUser) => {
     if (user.isVerified) {
       return { status: 'verified', label: 'Verificato', className: 'bg-green-100 text-green-800' };
     } else if (user.verificationNotes) {
@@ -161,6 +167,18 @@ export default function UsersTable({ users, onVerifyUser }: UsersTableProps) {
                   Genere / Età
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Contatti
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Telefono
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Paese
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Città
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Registrato
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -204,6 +222,15 @@ export default function UsersTable({ users, onVerifyUser }: UsersTableProps) {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{formatGender(user.gender)}</div>
                         <div className="text-sm text-gray-500">{calculateAge(user.dateOfBirth)} anni</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.phoneNumber || 'Non disponibile'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.country || 'Non disponibile'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{user.city || 'Non disponibile'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">
@@ -261,7 +288,7 @@ export default function UsersTable({ users, onVerifyUser }: UsersTableProps) {
                 })
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={11} className="px-6 py-4 text-center text-sm text-gray-500">
                     Nessun utente trovato
                   </td>
                 </tr>
