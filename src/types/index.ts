@@ -10,6 +10,16 @@ export type User = {
   createdAt?: Date;
   updatedAt?: Date;
   gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
+  isVerified?: boolean;
+  documentUrl?: string | null;
+  documentType?: string | null;
+  verificationNotes?: string | null;
+  image?: string | null;
+  phoneNumber?: string | null;
+  dateOfBirth?: Date | null;
+  isAdmin?: boolean;
+  emailVerified?: boolean;
+  lastLogin?: Date | null;
 };
 
 export type Category = {

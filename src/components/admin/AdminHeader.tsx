@@ -14,7 +14,7 @@ export default function AdminHeader() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/admin" className="flex items-center">
-                <Logo variant="dark" size="small" />
+                <Logo variant="dark" size="small" linkToHome={false} />
                 <span className="ml-2 text-gray-900 font-medium">Admin</span>
               </Link>
             </div>

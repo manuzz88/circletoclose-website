@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f8f9fa" />
+  <rect x="50" y="50" width="300" height="200" rx="10" fill="#ffffff" stroke="#d4af37" stroke-width="2" />
+  <text x="200" y="130" font-family="Arial" font-size="16" fill="#333333" text-anchor="middle">Documento di test</text>
+  <text x="200" y="160" font-family="Arial" font-size="14" fill="#666666" text-anchor="middle">CircleToClose</text>
+  <text x="200" y="190" font-family="Arial" font-size="12" fill="#999999" text-anchor="middle">Piattaforma esclusiva per eventi privati di lusso</text>
+  <path d="M320 230 L350 230 M320 240 L350 240" stroke="#d4af37" stroke-width="2" stroke-linecap="round" />
+</svg>

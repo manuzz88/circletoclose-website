@@ -2,16 +2,21 @@
 
 export type User = {
   id: string;
-  name: string;
+  name?: string | null;
   email: string;
-  image?: string;
-  role: 'USER' | 'ADMIN' | 'SUPER_ADMIN';
-  gender: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY';
-  birthDate?: Date;
-  bio?: string;
-  phone?: string;
-  instagram?: string;
-  verified: boolean;
+  image?: string | null;
+  password?: string;
+  isAdmin?: boolean;
+  dateOfBirth?: Date | null;
+  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY' | null;
+  bio?: string | null;
+  phoneNumber?: string | null;
+  isVerified: boolean;
+  emailVerified?: boolean;
+  lastLogin?: Date | null;
+  documentUrl?: string | null;       // URL del documento d'identità caricato
+  documentType?: string | null;      // Tipo di documento
+  verificationNotes?: string | null; // Note sulla verifica
   createdAt: Date;
   updatedAt: Date;
 };

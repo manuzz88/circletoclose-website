@@ -26,6 +26,9 @@ model User {
   gender              Gender?
   isVerified          Boolean       @default(false)
   phoneNumber         String?
+  documentUrl         String?
+  documentType        String?
+  verificationNotes   String?
   comments            Comment[]
   participatingEvents Participant[]
   reviews             Review[]
@@ -79,10 +82,10 @@ model Image {
   id            String   @id @default(cuid())
   url           String
   localPath     String
-  cloudinaryUrl String?  
   locationId    String
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   updatedAt     DateTime @updatedAt @db.Timestamp(6)
+  cloudinaryUrl String?
   location      Location @relation(fields: [locationId], references: [id])
 }
 

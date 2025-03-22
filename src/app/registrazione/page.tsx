@@ -17,10 +17,11 @@ export default function RegistrationPage() {
     gender: '',
     birthDate: '',
     acceptTerms: false,
+    documentType: 'IDENTITY_CARD', 
   });
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [documentPreview, setDocumentPreview] = useState<string | null>(null);
-  const [currentStep, setCurrentStep] = useState(1); // 1: Dati personali, 2: Documento, 3: Conferma
+  const [currentStep, setCurrentStep] = useState(1); 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +36,6 @@ export default function RegistrationPage() {
     if (file) {
       setDocumentFile(file);
       
-      // Crea un'anteprima del documento
       const reader = new FileReader();
       reader.onloadend = () => {
         setDocumentPreview(reader.result as string);
@@ -45,7 +45,6 @@ export default function RegistrationPage() {
   };
 
   const handleNextStep = () => {
-    // Validazione per il primo step
     if (currentStep === 1) {
       if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.gender || !formData.birthDate) {
         setError('Compila tutti i campi obbligatori');
@@ -57,7 +56,6 @@ export default function RegistrationPage() {
         return;
       }
       
-      // Verifica età minima (18 anni)
       const birthDate = new Date(formData.birthDate);
       const today = new Date();
       const age = today.getFullYear() - birthDate.getFullYear();
@@ -73,7 +71,6 @@ export default function RegistrationPage() {
       }
     }
     
-    // Validazione per il secondo step
     if (currentStep === 2 && !documentFile) {
       setError('Carica un documento d\'identità valido');
       return;
@@ -88,6 +85,46 @@ export default function RegistrationPage() {
     setError(null);
   };
 
+  const uploadDocument = async (): Promise<string | null> => {
+    if (!documentFile) {
+      console.log('Nessun file documento selezionato');
+      return null;
+    }
+    
+    console.log('Inizio caricamento documento:', documentFile.name, documentFile.type, documentFile.size);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', documentFile);
+      
+      console.log('Invio richiesta di caricamento all\'API');
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Errore nella risposta API:', errorData);
+        throw new Error(errorData.error || 'Errore durante il caricamento del documento');
+      }
+      
+      const data = await response.json();
+      console.log('Documento caricato con successo, URL:', data.url);
+      
+      // Verifica che l'URL restituito sia valido e non sia un URL di esempio
+      if (!data.url || data.url.includes('example.com')) {
+        console.error('URL del documento non valido:', data.url);
+        throw new Error('URL del documento non valido');
+      }
+      
+      return data.url;
+    } catch (error) {
+      console.error('Errore durante il caricamento del documento:', error);
+      throw new Error('Impossibile caricare il documento. Riprova più tardi.');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -100,14 +137,35 @@ export default function RegistrationPage() {
     setLoading(true);
 
     try {
-      // Qui implementeremo la logica di registrazione quando avremo l'API
-      // Per ora simuliamo una registrazione riuscita dopo un breve ritardo
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const documentUrl = await uploadDocument();
       
-      // Reindirizza alla home dopo la registrazione
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        name: `${formData.firstName} ${formData.lastName}`,
+        dateOfBirth: formData.birthDate,
+        gender: formData.gender,
+        documentUrl: documentUrl,
+        documentType: formData.documentType,
+      };
+      
+      const response = await fetch('/api/utenti', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Errore durante la registrazione');
+      }
+      
       router.push('/registrazione-completata');
     } catch (err) {
-      setError('Errore durante la registrazione. Riprova più tardi.');
+      console.error('Errore durante la registrazione:', err);
+      setError(err instanceof Error ? err.message : 'Errore durante la registrazione. Riprova più tardi.');
     } finally {
       setLoading(false);
     }
@@ -132,7 +190,6 @@ export default function RegistrationPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-[#1a1d21] py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-[#d4af37]/20">
-          {/* Indicatore di progresso */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div className="flex flex-col items-center">
@@ -165,7 +222,6 @@ export default function RegistrationPage() {
           )}
           
           <form onSubmit={handleSubmit}>
-            {/* Step 1: Dati personali */}
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -314,7 +370,6 @@ export default function RegistrationPage() {
               </div>
             )}
             
-            {/* Step 2: Caricamento documento */}
             {currentStep === 2 && (
               <div className="space-y-6">
                 <div>
@@ -323,6 +378,24 @@ export default function RegistrationPage() {
                     Per garantire la massima sicurezza e l'esclusività degli eventi, richiediamo la verifica della tua identità. 
                     Carica una foto o una scansione di un documento d'identità valido (carta d'identità, passaporto o patente).
                   </p>
+                  
+                  <div>
+                    <label htmlFor="documentType" className="block text-sm font-medium text-gray-300 mb-2">
+                      Tipo di documento
+                    </label>
+                    <select
+                      id="documentType"
+                      name="documentType"
+                      required
+                      value={formData.documentType}
+                      onChange={handleChange}
+                      className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm mb-4"
+                    >
+                      <option value="IDENTITY_CARD">Carta d'identità</option>
+                      <option value="PASSPORT">Passaporto</option>
+                      <option value="DRIVING_LICENSE">Patente di guida</option>
+                    </select>
+                  </div>
                   
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-700 border-dashed rounded-md hover:border-[#d4af37]/50 transition-colors">
                     <div className="space-y-1 text-center">
@@ -399,7 +472,6 @@ export default function RegistrationPage() {
               </div>
             )}
             
-            {/* Step 3: Conferma e termini */}
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div>
@@ -431,6 +503,14 @@ export default function RegistrationPage() {
                         <p className="text-white">{new Date(formData.birthDate).toLocaleDateString('it-IT')}</p>
                       </div>
                       <div>
+                        <p className="text-gray-400">Tipo documento:</p>
+                        <p className="text-white">
+                          {formData.documentType === 'IDENTITY_CARD' ? 'Carta d\'identità' :
+                           formData.documentType === 'PASSPORT' ? 'Passaporto' :
+                           formData.documentType === 'DRIVING_LICENSE' ? 'Patente di guida' : 'Non specificato'}
+                        </p>
+                      </div>
+                      <div className="col-span-2">
                         <p className="text-gray-400">Documento:</p>
                         <p className="text-white">{documentFile?.name || 'Nessun documento'}</p>
                       </div>

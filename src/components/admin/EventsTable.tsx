@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { Event } from '@/types';
 import { formatDate } from '@/utils/dateUtils';
 
@@ -59,15 +58,9 @@ export default function EventsTable({ events, onToggleFeatured }: EventsTablePro
               <tr key={event.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10 relative">
-                      {event.image && (
-                        <Image 
-                          src={event.image} 
-                          alt={event.title} 
-                          fill
-                          className="rounded-md object-cover"
-                        />
-                      )}
+                    <div className="flex-shrink-0 h-10 w-10 relative bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+                      {/* Iniziali dell'evento invece dell'immagine */}
+                      {event.title && event.title.charAt(0)}
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">{event.title}</div>
@@ -79,13 +72,13 @@ export default function EventsTable({ events, onToggleFeatured }: EventsTablePro
                   <div className="text-sm text-gray-900">{formatDate(new Date(event.date))}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{event.venue}</div>
-                  <div className="text-sm text-gray-500">{event.location}</div>
+                  <div className="text-sm text-gray-900">{event.locationObj?.name || event.venue || event.location || 'N/D'}</div>
+                  <div className="text-sm text-gray-500">{event.locationObj?.city || ''}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">u20AC{event.price}</div>
+                  <div className="text-sm text-gray-900">€{event.price}</div>
                   {event.womenPrice !== undefined && event.womenPrice !== event.price && (
-                    <div className="text-sm text-pink-500">u20AC{event.womenPrice} (donne)</div>
+                    <div className="text-sm text-pink-500">€{event.womenPrice} (donne)</div>
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

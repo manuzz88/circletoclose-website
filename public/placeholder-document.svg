@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f3f4f6" />
+  <rect x="80" y="60" width="240" height="180" rx="8" fill="#e5e7eb" stroke="#d1d5db" stroke-width="2" />
+  <path d="M140 120 L260 120 M140 150 L260 150 M140 180 L220 180" stroke="#9ca3af" stroke-width="10" stroke-linecap="round" />
+  <circle cx="200" cy="90" r="20" fill="#9ca3af" />
+  <text x="200" y="240" font-family="Arial" font-size="16" fill="#6b7280" text-anchor="middle">Documento non disponibile</text>
+</svg>

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import AdminHeader from './AdminHeader';
-import AdminSidebar from './AdminSidebar';
-import EventsTable from './EventsTable';
+import AdminHeader from '../admin/AdminHeader';
+import AdminSidebar from '../admin/AdminSidebar';
+import EventsTable from '../admin/EventsTable';
 import { Event } from '@/types';
 
 export default function AdminDashboard() {
