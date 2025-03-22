@@ -2,19 +2,12 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getCategories, getAllEvents, getFeaturedEvents } from '@/services/eventService';
-import Navbar from '@/components/common/Navbar';
-import Footer from '@/components/common/Footer';
 import FeaturedEvents from '@/components/home/FeaturedEvents';
+import PageWithNavbar from '../../components/layouts/PageWithNavbar';
 
-export default async function EventiPage() {
-  const categories = await getCategories();
-  const events = await getAllEvents();
-
+export default function EventiPage() {
   return (
-    <div className="min-h-screen bg-black">
-      {/* Navbar */}
-      <Navbar variant="default" />
-      
+    <PageWithNavbar variant="default">
       {/* Descrizione Eventi */}
       <section className="pt-36 pb-20 px-6 bg-black text-white">
         <div className="max-w-4xl mx-auto text-center">
@@ -33,11 +26,8 @@ export default async function EventiPage() {
 
       {/* Tutti gli Eventi */}
       <div>
-        <FeaturedEvents events={events} title="I Nostri Eventi" showAllEventsButton={false} showTitle={false} showDescription={false} />
+        <FeaturedEvents events={[]} title="I Nostri Eventi" showAllEventsButton={false} showTitle={false} showDescription={false} />
       </div>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+    </PageWithNavbar>
   );
 }

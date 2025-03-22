@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Cormorant, Montserrat } from "next/font/google";
 import "./globals.css";
+import ClientProviders from "../components/providers/ClientProviders";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -35,7 +36,9 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${cormorant.variable} ${montserrat.variable} antialiased`}
       >
-        {children}
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

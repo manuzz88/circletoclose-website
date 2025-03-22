@@ -1,16 +1,13 @@
 import Link from "next/link";
-import FeaturedEvents from "@/components/home/FeaturedEvents";
-import Stats from "@/components/home/Stats";
-import Testimonials from "@/components/home/Testimonials";
-import { Testimonial } from "@/types";
-import Logo from "@/components/common/Logo";
-import Footer from "@/components/common/Footer";
-import { getFeaturedEvents } from "@/services/eventService";
+import FeaturedEvents from "../components/home/FeaturedEvents";
+import Stats from "../components/home/Stats";
+import Testimonials from "../components/home/Testimonials";
+import { Testimonial } from "../types";
+import Logo from "../components/common/Logo";
+import PageWithNavbar from "../components/layouts/PageWithNavbar";
+import { getFeaturedEvents } from "../services/eventService";
 
-export default async function Home() {
-  // Recupera gli eventi in evidenza
-  const featuredEvents = await getFeaturedEvents();
-  
+export default function Home() {
   // Dati statistici di esempio
   const statsData = {
     totalEvents: 120,
@@ -45,7 +42,7 @@ export default async function Home() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <PageWithNavbar variant="transparent">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Sfondo elegante e minimal */}
@@ -92,7 +89,7 @@ export default async function Home() {
       </section>
 
       {/* Featured Events Section */}
-      <FeaturedEvents events={featuredEvents} maxEvents={3} showAllEventsButton={true} />
+      <FeaturedEvents events={[]} maxEvents={3} showAllEventsButton={true} />
 
       {/* Stats Section */}
       <Stats 
@@ -145,9 +142,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      
-      {/* Footer */}
-      <Footer />
-    </div>
+    </PageWithNavbar>
   );
 }

@@ -4,12 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Logo from '@/components/common/Logo';
+import { useAuth } from '@/components/auth/AuthProvider';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    name: 'Manuel Lazzaro', // Nome predefinito per la demo
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,12 +28,15 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Qui implementeremo la logica di autenticazione quando avremo l'API
-      // Per ora simuliamo un accesso riuscito dopo un breve ritardo
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Utilizziamo la funzione login dal nostro AuthProvider
+      const success = await login(formData.email, formData.password, formData.name);
       
-      // Reindirizza alla home dopo il login
-      router.push('/');
+      if (success) {
+        // Reindirizza alla home dopo il login
+        router.push('/');
+      } else {
+        setError('Credenziali non valide. Riprova.');
+      }
     } catch (err) {
       setError('Errore durante l\'accesso. Verifica le tue credenziali.');
     } finally {
@@ -76,6 +82,24 @@ export default function LoginPage() {
                   autoComplete="email"
                   required
                   value={formData.email}
+                  onChange={handleChange}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                Nome
+              </label>
+              <div className="mt-1">
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  value={formData.name}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-700 rounded-md shadow-sm placeholder-gray-500 bg-[#2a2d31] text-white focus:outline-none focus:ring-[#d4af37] focus:border-[#d4af37] sm:text-sm"
                 />
