@@ -1,147 +1,202 @@
-import Link from "next/link";
-import FeaturedEvents from "../components/home/FeaturedEvents";
-import Stats from "../components/home/Stats";
-import Testimonials from "../components/home/Testimonials";
-import { Testimonial } from "../types";
-import Logo from "../components/common/Logo";
-import PageWithNavbar from "../components/layouts/PageWithNavbar";
-import { getFeaturedEvents } from "../services/eventService";
-
 export default function Home() {
-  // Dati statistici di esempio
-  const statsData = {
-    totalEvents: 120,
-    totalLocations: 190,
-    totalMembers: 3500,
-    satisfactionRate: 98
-  };
-
-  // Testimonial di esempio
-  const testimonials: Testimonial[] = [
-    {
-      id: '1',
-      name: 'Marco Bianchi',
-      role: 'Imprenditore',
-      quote: 'CircleToClose ha trasformato il mio modo di fare networking. Gli eventi sono sempre in location straordinarie e l\'atmosfera è perfetta per creare connessioni di valore.',
-      image: '/images/testimonials/testimonial1.jpg',
-    },
-    {
-      id: '2',
-      name: 'Giulia Rossi',
-      role: 'Direttrice Marketing',
-      quote: 'La qualità degli eventi è sempre impeccabile. Ogni dettaglio è curato alla perfezione e il livello degli altri partecipanti è sempre elevato.',
-      image: '/images/testimonials/testimonial2.jpg',
-    },
-    {
-      id: '3',
-      name: 'Alessandro Verdi',
-      role: 'Avvocato',
-      quote: 'Apprezzo particolarmente la selezione accurata dei partecipanti. Questo garantisce eventi di qualità dove è possibile conoscere persone interessanti in un contesto esclusivo.',
-      image: '/images/testimonials/testimonial3.jpg',
-    },
-  ];
-
   return (
-    <PageWithNavbar variant="transparent">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Sfondo elegante e minimal */}
-        <div className="absolute inset-0 bg-black z-0"></div>
-        
-        {/* Elementi decorativi di lusso */}
-        <div className="absolute inset-0 z-0">
-          {/* Bordi dorati */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-40"></div>
-          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-40"></div>
-          <div className="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-40"></div>
-          <div className="absolute right-0 top-0 w-1 h-full bg-gradient-to-b from-transparent via-[#d4af37] to-transparent opacity-40"></div>
-          
-          {/* Sottile vignettatura */}
-          <div className="absolute inset-0 bg-radial-gradient opacity-60"></div>
-          
-          {/* Effetto particelle dorate */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 opacity-20" 
-                 style={{
-                   backgroundImage: 'radial-gradient(circle, #d4af37 1px, transparent 1px), radial-gradient(circle, #d4af37 1px, transparent 1px)',
-                   backgroundSize: '40px 40px',
-                   backgroundPosition: '0 0, 20px 20px'
-                 }}>
-            </div>
-          </div>
+      <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
+          <div className="absolute inset-0 bg-gradient-radial from-yellow-600/10 via-transparent to-transparent"></div>
         </div>
         
-        {/* Logo centrale */}
-        <div className="relative z-10 text-center mx-auto">
-          <Logo size="large" withTagline={true} className="mb-10" />
-          <div className="w-32 h-1 mx-auto mb-12 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
-        </div>
-        
-        {/* Indicatore di scroll */}
-        <div className="absolute bottom-12 left-0 right-0 mx-auto w-full flex flex-col items-center justify-center z-20 pointer-events-none">
-          <span className="text-[#d4af37] text-sm tracking-widest uppercase mb-2 opacity-80 font-montserrat">Scopri</span>
-          <div className="animate-bounce">
-            <svg className="w-5 h-5 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
+        {/* Content */}
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+          {/* Logo */}
+          <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-4xl font-bold text-black animate-pulse">
+            C
           </div>
+          
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
+            CircleToClose
+          </h1>
+          
+          <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-2xl mx-auto">
+            Eventi esclusivi dove ogni dettaglio conta
+          </p>
+          
+          {/* Main CTA */}
+          <a 
+            href="https://t.me/CircleToCloseBot" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-12 py-4 text-xl font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-yellow-400/25 mb-8"
+          >
+            🎭 Entra nel Bot Telegram
+          </a>
+          
+          <p className="text-sm text-gray-400">
+            Accesso solo su invito • Massimo 50 persone per evento
+          </p>
         </div>
       </section>
 
-      {/* Featured Events Section */}
-      <FeaturedEvents events={[]} maxEvents={3} showAllEventsButton={true} />
+      {/* How It Works Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
+            Come Funziona
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "🔑",
+                title: "1. Ricevi un Invito",
+                description: "Non puoi registrarti da solo. Devi essere invitato da qualcuno che è già dentro."
+              },
+              {
+                icon: "📱",
+                title: "2. Entra nel Bot",
+                description: "Tutto avviene su Telegram. Inserisci il tuo codice invito e completa la registrazione."
+              },
+              {
+                icon: "🎭",
+                title: "3. Scopri l'Evento",
+                description: "C'è sempre UN SOLO evento disponibile. Focus totale e massima esclusività."
+              },
+              {
+                icon: "💳",
+                title: "4. Prenota il Posto",
+                description: "Pagamento sicuro. Il denaro viene addebitato solo se l'evento si conferma."
+              },
+              {
+                icon: "🏛️",
+                title: "5. Vivi l'Esperienza",
+                description: "Location esclusive, massimo 50 persone selezionate, ogni dettaglio curato."
+              },
+              {
+                icon: "🌟",
+                title: "6. Diventa Parte del Cerchio",
+                description: "Dopo il primo evento, puoi invitare altre persone e crescere di livello."
+              }
+            ].map((step, index) => (
+              <div key={index} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 p-8 rounded-2xl border border-yellow-400/20 hover:border-yellow-400/40 transition-all duration-300">
+                <div className="text-4xl mb-4">{step.icon}</div>
+                <h3 className="text-xl font-bold mb-4 text-yellow-400">{step.title}</h3>
+                <p className="text-gray-300 leading-relaxed">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Stats Section */}
-      <Stats 
-        totalEvents={statsData.totalEvents}
-        totalLocations={statsData.totalLocations}
-        totalMembers={statsData.totalMembers}
-        satisfactionRate={statsData.satisfactionRate}
-      />
-
-      {/* Link alla pagina delle location */}
-      <div className="bg-[#111316] py-24 relative overflow-hidden border-t border-b border-[#d4af37]/20">
-        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url(/images/locations/location-pattern.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <div className="w-24 h-1 mx-auto mb-8 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
-          <h2 className="font-playfair text-4xl md:text-5xl text-white mb-8">Scopri le Nostre Location Esclusive</h2>
-          <p className="font-cormorant text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Abbiamo selezionato per te le location più prestigiose di Milano per i tuoi eventi privati ed esclusivi.
-          </p>
-          <Link 
-            href="/locations" 
-            className="font-montserrat inline-block bg-transparent border-2 border-[#d4af37] text-[#d4af37] px-10 py-4 text-lg tracking-wider uppercase hover:bg-[#d4af37] hover:text-white transition-all duration-500 hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transform hover:scale-105">
-            Esplora le Location
-          </Link>
-        </div>
-      </div>
-
-      {/* Testimonials Section */}
-      <Testimonials testimonials={testimonials} />
-
-      {/* CTA Section */}
-      <section className="py-24 px-6 bg-[#0f1114] text-white text-center">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-light mb-8 tracking-wide">Unisciti a Noi</h2>
-          <p className="text-xl mb-12 text-gray-300 font-light leading-relaxed">
-            Partecipa ai nostri eventi esclusivi e vivi esperienze uniche in location straordinarie
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Link 
-              href="/accedi" 
-              className="bg-transparent border border-[#d4af37] text-[#d4af37] px-8 py-3 text-lg font-light tracking-wider hover:bg-[#d4af37]/10 transition-colors duration-300"
-            >
-              Accedi
-            </Link>
-            <Link 
-              href="/registrazione" 
-              className="bg-[#d4af37] border border-[#d4af37] text-black px-8 py-3 text-lg font-light tracking-wider hover:bg-[#c9a431] transition-colors duration-300"
-            >
-              Registrati
-            </Link>
+      <section className="py-20 px-6 bg-gradient-to-r from-gray-900/50 to-black/50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-16 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
+            Perché CircleToClose è Diverso
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { number: "1", label: "Evento alla Volta" },
+              { number: "50", label: "Max Partecipanti" },
+              { number: "100%", label: "Su Invito" },
+              { number: "0", label: "App da Scaricare" }
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-4xl md:text-5xl font-bold text-yellow-400 mb-2">{stat.number}</div>
+                <div className="text-gray-300 text-sm">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
-    </PageWithNavbar>
+
+      {/* Membership Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
+            Sistema Membership
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                level: "🥈 SILVER",
+                features: ["1 invito per trimestre", "Accesso agli eventi", "Prezzo pieno"],
+                color: "border-gray-400"
+              },
+              {
+                level: "🥇 GOLD", 
+                features: ["2 inviti per trimestre", "Sconto 10%", "Supporto prioritario"],
+                color: "border-yellow-500"
+              },
+              {
+                level: "💎 PLATINUM",
+                features: ["3 inviti per trimestre", "Sconto 20%", "Location preview"],
+                color: "border-gray-300"
+              },
+              {
+                level: "🏆 FOUNDER",
+                features: ["5 inviti per trimestre", "Accesso prioritario", "Influenza eventi"],
+                color: "border-yellow-400"
+              }
+            ].map((tier, index) => (
+              <div key={index} className={`bg-gradient-to-br from-gray-800/30 to-gray-900/30 p-6 rounded-2xl border-2 ${tier.color} hover:scale-105 transition-all duration-300`}>
+                <h3 className="text-lg font-bold mb-4 text-center">{tier.level}</h3>
+                <ul className="space-y-2">
+                  {tier.features.map((feature, idx) => (
+                    <li key={idx} className="text-sm text-gray-300 flex items-center">
+                      <span className="text-yellow-400 mr-2">✓</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="py-20 px-6 text-center bg-gradient-to-r from-black to-gray-900">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
+            Pronto per l'Esperienza?
+          </h2>
+          
+          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+            Unisciti al cerchio esclusivo di persone che vivono eventi unici in location straordinarie
+          </p>
+          
+          <div className="space-y-4">
+            <a 
+              href="https://t.me/CircleToCloseBot" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-12 py-4 text-xl font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-yellow-400/25"
+            >
+              🎭 Accedi al Bot Telegram
+            </a>
+            
+            <p className="text-sm text-gray-400">
+              "Where exclusivity meets perfection"
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 border-t border-yellow-400/20 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-yellow-400 mb-4">CircleToClose</h3>
+          <p className="text-gray-300 mb-6">Eventi esclusivi dove ogni dettaglio conta</p>
+          <p className="text-sm text-gray-500">
+            Sistema su Invito • Massimo 50 Persone • Location Segrete
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }
