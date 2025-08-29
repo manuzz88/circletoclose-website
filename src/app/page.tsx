@@ -12,8 +12,8 @@ export default function Home() {
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           {/* Logo */}
-          <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-4xl font-bold text-black animate-pulse">
-            C
+          <div className="w-32 h-32 mx-auto mb-8">
+            <img src="/logo.svg" alt="CircleToClose" className="w-full h-full" />
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
@@ -35,7 +35,7 @@ export default function Home() {
           </a>
           
           <p className="text-sm text-gray-400">
-            Accesso solo su invito • Massimo 50 persone per evento
+            Accesso solo su invito • Eventi esclusivi
           </p>
         </div>
       </section>
@@ -72,7 +72,7 @@ export default function Home() {
               {
                 icon: "🏛️",
                 title: "5. Vivi l'Esperienza",
-                description: "Location esclusive, massimo 50 persone selezionate, ogni dettaglio curato."
+                description: "Location esclusive, gruppi selezionati, ogni dettaglio curato."
               },
               {
                 icon: "🌟",
@@ -100,7 +100,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { number: "1", label: "Evento alla Volta" },
-              { number: "50", label: "Max Partecipanti" },
+              { number: "∞", label: "Possibilità" },
               { number: "100%", label: "Su Invito" },
               { number: "0", label: "App da Scaricare" }
             ].map((stat, index) => (
@@ -193,7 +193,7 @@ export default function Home() {
           <h3 className="text-2xl font-bold text-yellow-400 mb-4">CircleToClose</h3>
           <p className="text-gray-300 mb-6">Eventi esclusivi dove ogni dettaglio conta</p>
           <p className="text-sm text-gray-500">
-            Sistema su Invito • Massimo 50 Persone • Location Segrete
+            Sistema su Invito • Eventi Esclusivi • Location Segrete
           </p>
         </div>
       </footer>
