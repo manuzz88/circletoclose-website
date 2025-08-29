@@ -21,7 +21,7 @@ export default function Home() {
           
           {/* Main CTA */}
           <a 
-            href="https://t.me/CircleToCloseBot" 
+            href="https://t.me/circletoclose_bot" 
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-12 py-4 text-xl font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-yellow-400/25 mb-8"
@@ -122,7 +122,7 @@ export default function Home() {
           
           <div className="space-y-4">
             <a 
-              href="https://t.me/CircleToCloseBot" 
+              href="https://t.me/circletoclose_bot" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-12 py-4 text-xl font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-yellow-400/25"
