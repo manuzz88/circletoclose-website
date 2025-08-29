@@ -119,22 +119,22 @@ export default function Home() {
             {[
               {
                 level: "🥈 SILVER",
-                features: ["1 invito per trimestre", "Accesso agli eventi", "Prezzo pieno"],
+                features: ["1 invito per trimestre", "Accesso agli eventi", "Esperienza standard"],
                 color: "border-gray-400"
               },
               {
                 level: "🥇 GOLD", 
-                features: ["2 inviti per trimestre", "Sconto 10%", "Supporto prioritario"],
+                features: ["2 inviti per trimestre", "Servizio concierge", "Welcome drink incluso"],
                 color: "border-yellow-500"
               },
               {
                 level: "💎 PLATINUM",
-                features: ["3 inviti per trimestre", "Sconto 20%", "Location preview"],
+                features: ["3 inviti per trimestre", "Location preview esclusiva", "Personal assistant dedicato"],
                 color: "border-gray-300"
               },
               {
                 level: "🏆 FOUNDER",
-                features: ["5 inviti per trimestre", "Accesso prioritario", "Influenza eventi"],
+                features: ["5 inviti per trimestre", "Co-creazione eventi", "Accesso VIP backstage"],
                 color: "border-yellow-400"
               }
             ].map((tier, index) => (
