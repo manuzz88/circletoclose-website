@@ -1,24 +1,19 @@
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
-          <div className="absolute inset-0 bg-gradient-radial from-yellow-600/10 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-black"></div>
         </div>
         
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           {/* Logo */}
-          <div className="w-32 h-32 mx-auto mb-8">
+          <div className="w-80 h-80 md:w-96 md:h-96 mx-auto mb-8">
             <img src="/logo.svg" alt="CircleToClose" className="w-full h-full" />
           </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
-            CircleToClose
-          </h1>
           
           <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-2xl mx-auto">
             Eventi esclusivi dove ogni dettaglio conta
@@ -91,7 +86,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-gray-900/50 to-black/50">
+      <section className="py-20 px-6 bg-black">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-16 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
             Perché CircleToClose è Diverso
@@ -160,7 +155,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 px-6 text-center bg-gradient-to-r from-black to-gray-900">
+      <section className="py-20 px-6 text-center bg-black">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
             Pronto per l'Esperienza?
