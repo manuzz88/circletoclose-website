@@ -108,51 +108,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Membership Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-yellow-400 to-white bg-clip-text text-transparent">
-            Sistema Membership
-          </h2>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                level: "🥈 SILVER",
-                features: ["1 invito per trimestre", "Accesso agli eventi", "Esperienza standard"],
-                color: "border-gray-400"
-              },
-              {
-                level: "🥇 GOLD", 
-                features: ["2 inviti per trimestre", "Servizio concierge", "Welcome drink incluso"],
-                color: "border-yellow-500"
-              },
-              {
-                level: "💎 PLATINUM",
-                features: ["3 inviti per trimestre", "Location preview esclusiva", "Personal assistant dedicato"],
-                color: "border-gray-300"
-              },
-              {
-                level: "🏆 FOUNDER",
-                features: ["5 inviti per trimestre", "Co-creazione eventi", "Accesso VIP backstage"],
-                color: "border-yellow-400"
-              }
-            ].map((tier, index) => (
-              <div key={index} className={`bg-gradient-to-br from-gray-800/30 to-gray-900/30 p-6 rounded-2xl border-2 ${tier.color} hover:scale-105 transition-all duration-300`}>
-                <h3 className="text-lg font-bold mb-4 text-center">{tier.level}</h3>
-                <ul className="space-y-2">
-                  {tier.features.map((feature, idx) => (
-                    <li key={idx} className="text-sm text-gray-300 flex items-center">
-                      <span className="text-yellow-400 mr-2">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Final CTA Section */}
       <section className="py-20 px-6 text-center bg-black">
@@ -187,9 +142,19 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <h3 className="text-2xl font-bold text-yellow-400 mb-4">CircleToClose</h3>
           <p className="text-gray-300 mb-6">Eventi esclusivi dove ogni dettaglio conta</p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-6">
             Sistema su Invito • Eventi Esclusivi • Location Segrete
           </p>
+          
+          {/* Company Info */}
+          <div className="border-t border-gray-700 pt-6 mt-6">
+            <div className="text-xs text-gray-400 space-y-1">
+              <p className="font-semibold text-yellow-400/80">KAIROS GROUP SRL</p>
+              <p>Via Serviliano Lattuada 26</p>
+              <p>20135 Milano (ITALY)</p>
+              <p>P.IVA: 09347410962</p>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
